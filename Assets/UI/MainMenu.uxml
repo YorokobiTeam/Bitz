@@ -1,0 +1,18 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Utility.uss?fileID=7433441132597879392&amp;guid=9a618524c4ee60641bde1444316fde40&amp;type=3" />
+    <Style src="project://database/Assets/UI/UIComponents.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3#UIComponents" />
+    <ui:VisualElement name="BGGradient" enabled="false" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-image: url(&quot;project://database/Assets/Sprites/BackgroundGradient.png?fileID=2800000&amp;guid=8066b137edf4c0748a2cba22a5d20085&amp;type=3#BackgroundGradient&quot;); background-repeat: space space;" />
+    <ui:VisualElement name="BGTexture" enabled="false" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; background-image: url(&quot;project://database/Assets/Sprites/BackgroundTexture.png?fileID=2800000&amp;guid=8b28149bfff1d2f47ad80e00331972c4&amp;type=3#BackgroundTexture&quot;); background-repeat: space space; opacity: 0.41;" />
+    <ui:VisualElement name="Root" style="flex-grow: 1; flex-direction: row; position: absolute; width: 100%; height: 100%;">
+        <ui:VisualElement style="flex-grow: 1; width: 40%; flex-direction: column; align-self: stretch; justify-content: space-between;">
+            <ui:VisualElement name="VisualElement" class="h-quarter" style="flex-grow: 1;" />
+            <ui:VisualElement class="h-3-4" style="flex-grow: 1; align-items: stretch; justify-content: flex-end;">
+                <ui:Button text="Browse&#10;" name="Browse" selectable="false" double-click-selects-word="false" triple-click-selects-line="false" class="main-menu-button" />
+                <ui:Button text="Editor" name="Editor" class="main-menu-button" />
+                <ui:Button text="Options" name="Options" class="main-menu-button" />
+                <ui:Button text="Exit" name="Exit" class="main-menu-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; width: 60%;" />
+    </ui:VisualElement>
+</ui:UXML>

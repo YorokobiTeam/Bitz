@@ -1,0 +1,6 @@
+.animate-spin {
+    transition-property: rotate;
+    rotate: 359.99deg;
+    transition-duration: 1s;
+    transition-timing-function: ease;
+}

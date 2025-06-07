@@ -1,0 +1,73 @@
+.main-menu-button {
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    -unity-font-definition: url("project://database/Assets/UI/Assets/fonts/HelveticaCondensed.ttf?fileID=12800000&guid=b4022faa5c6f53944b53dc5a745f0067&type=3#HelveticaCondensed");
+    bottom: 0;
+    right: auto;
+    position: relative;
+    left: 0;
+    -unity-text-align: middle-left;
+    color: rgb(0, 0, 0);
+    font-size: 50px;
+    -unity-font-style: normal;
+    white-space: nowrap;
+    padding: 60px;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in;
+    margin: 0 0 10px 0;
+    transform-origin: left bottom;
+}
+
+.main-menu-button:hover {
+    color: rgb(255, 255, 255);
+    scale: 1.1 1.1;
+    margin-bottom: 10px;
+    background-image: url("project://database/Assets/Sprites/menu-item.png?fileID=2800000&guid=93257b6f528c92c419a5485488596dd8&type=3#menu-item");
+    -unity-background-scale-mode: scale-and-crop;
+    font-size: 60px;
+    transform-origin: left bottom;
+}
+
+.main-menu-button:active {
+    color: rgb(172, 172, 172);
+}
+
+.main-button {
+    height: 200px;
+    width: 100px;
+    bottom: 0;
+    right: auto;
+    position: absolute;
+    left: 0;
+    -unity-text-align: middle-left;
+    color: rgba(157, 115, 115, 0.64);
+    font-size: 100px;
+    -unity-font-style: normal;
+    white-space: nowrap;
+    padding: 560px;
+    transition-property: all;
+    transition-duration: 50px;
+    transition-timing-function: ease-in;
+}
+
+.scale-0 {
+    scale: 0.6 0.6;
+}
+
+.scale-1 {
+    scale: 0.8 0.8;
+}
+
+.scale-2 {
+    scale: 1.2 1.2;
+}
+
+.main-menu-button:focus {
+    color: rgb(255, 255, 255);
+    scale: 1.1 1.1;
+    margin-bottom: 10px;
+    background-image: url("project://database/Assets/Sprites/menu-item.png?fileID=2800000&guid=93257b6f528c92c419a5485488596dd8&type=3#menu-item");
+    -unity-background-scale-mode: scale-and-crop;
+    font-size: 60px;
+}
