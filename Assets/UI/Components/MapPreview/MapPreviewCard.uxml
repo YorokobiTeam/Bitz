@@ -1,9 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
->
-    
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Utility.uss?fileID=7433441132597879392&amp;guid=9a618524c4ee60641bde1444316fde40&amp;type=3" />
+    <Style src="project://database/Assets/UI/UIComponents.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3#UIComponents" />
+    <ui:VisualElement name="Root" class="font-condensed" style="flex-grow: 1; background-color: rgb(0, 0, 0); flex-direction: row;">
+        <ui:VisualElement style="flex-grow: 1; width: 20%; background-image: url(&quot;project://database/Assets/Sprites/SampleAlbumCover.jpeg?fileID=2800000&amp;guid=8409ee6f674a7b3409ec4164d78bcd3d&amp;type=3#SampleAlbumCover&quot;); background-size: 75% 75%;" />
+        <ui:VisualElement style="flex-grow: 1; width: 80%;">
+            <ui:VisualElement class="h-one-half aictr text-4xl" style="flex-grow: 1;">
+                <ui:Label text="The intense voice of Hatsune Miku" class="card-title" style="-unity-text-align: upper-left;" />
+            </ui:VisualElement>
+            <ui:VisualElement class="h-one-half" style="flex-grow: 1; flex-direction: row;">
+                <ui:VisualElement class="w-one-half" style="flex-grow: 1;">
+                    <ui:VisualElement class="text-lg">
+                        <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                            <ui:VisualElement class="w-one-sixth" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/SongAuthorIcon.png?fileID=2800000&amp;guid=5a1052a4e12b2ea4d9b35970dabca330&amp;type=3#SongAuthorIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
+                            <ui:VisualElement class="w-five-sixths" style="flex-grow: 1; justify-content: center;">
+                                <ui:Label text="CosMo, GAiA" class="m-0 map-info" style="-unity-text-align: lower-left;">
+                                    <Bindings>
+                                        <ui:DataBinding property="text" binding-mode="ToTarget" />
+                                    </Bindings>
+                                </ui:Label>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                            <ui:VisualElement class="w-one-sixth" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/MapAuthorIcon.png?fileID=2800000&amp;guid=cb45e5ea004e9ef4c8b8683c633cbbdd&amp;type=3#MapAuthorIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
+                            <ui:VisualElement class="w-five-sixths" style="flex-grow: 1; justify-content: center;">
+                                <ui:Label text="DanketsUMaps" class="m-0 map-info" style="-unity-text-align: lower-left;">
+                                    <Bindings>
+                                        <ui:DataBinding property="text" binding-mode="ToTarget" />
+                                    </Bindings>
+                                </ui:Label>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="w-one-half" style="flex-grow: 1; flex-direction: row; justify-content: flex-end;">
+                    <ui:Label text="9999999" class="points" style="-unity-text-align: upper-left; text-overflow: ellipsis; -unity-paragraph-spacing: -957px;" />
+                    <ui:Label text="bitz" style="-unity-text-align: lower-left;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>

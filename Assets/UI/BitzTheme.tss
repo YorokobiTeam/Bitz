@@ -1,3 +1,72 @@
-VisualElement {
-    
+:root {
+  font-size: 14px;
+  -unity-font-definition: url("project://database/Assets/UI/Assets/fonts/HelveticaCondensed.ttf?fileID=12800000&guid=b4022faa5c6f53944b53dc5a745f0067&type=3#HelveticaCondensed");
+  color: rgba(255, 255, 255, 255);
+}
+
+.unity-label {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.unity-button {
+  border-radius: 0;
+  -unity-text-align: middle-center;
+  flex: 0 0 auto;
+  overflow: visible;
+  white-space: nowrap;
+  border-width: 0;
+  padding: 0;
+  margin: 0;
+  
+}
+
+.unity-scroll-view {
+  flex-shrink: 1;
+}
+
+.unity-scroll-view__content-and-vertical-scroll-container {
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.unity-scroll-view__content-viewport {
+  flex: auto;
+  overflow: hidden;
+}
+
+.unity-scroll-view--horizontal
+  > .unity-scroll-view__content-and-vertical-scroll-container
+  > .unity-scroll-view__content-viewport {
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.unity-scroll-view__content-container {
+  flex-shrink: 0;
+}
+
+.unity-scroll-view--horizontal
+  > .unity-scroll-view__content-and-vertical-scroll-container
+  > .unity-scroll-view__content-viewport
+  > .unity-scroll-view__content-container {
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.unity-scroll-view--horizontal.unity-scroll-view--scroll
+  > .unity-scroll-view__content-and-vertical-scroll-container
+  > .unity-scroll-view__content-viewport
+  > .unity-scroll-view__content-container {
+  overflow: scroll;
+}
+
+.unity-ui-document__root {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }

@@ -11769,10 +11769,6 @@
     height: auto;
 }
 
-.h-one-half {
-    height: 50%;
-}
-
 .h-one-third {
     height: 33.33333%;
 }
@@ -26358,4 +26354,8 @@
 
 .h-quarter {
     height: 25%;
+}
+
+.go-back {
+    translate: 0% 0;
 }
