@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c494278b26d74344d9ace9ce9244b507, type: 3}
+  m_Name: MapMetadataObject
+  m_EditorClassIdentifier: 
+  mapID: 1231
+  mapTitle: The intense voice of Hatsune Miku
+  musicAuthor: DECO*27
+  mapAuthor: DenKatsuMaps
+  currentPoints: 99999999
+  coverArtwork: {fileID: -418015014367539744, guid: 8409ee6f674a7b3409ec4164d78bcd3d, type: 3}
+  isOffline: 1
