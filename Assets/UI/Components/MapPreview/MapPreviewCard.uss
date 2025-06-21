@@ -1,1 +1,37 @@
-VisualElement {}
+.supp-icon {
+    max-width: 25px;
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Sprites/SongAuthorIcon.png?fileID=2800000&guid=5a1052a4e12b2ea4d9b35970dabca330&type=3#SongAuthorIcon");
+    height: 25px;
+    align-self: center;
+    justify-content: space-between;
+    align-items: auto;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.aictr {
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.name-container {
+    padding-left: 6px;
+}
+
+.card-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.points {
+    font-size: 40px;
+    white-space: normal;
+    transform-origin: left;
+    color: rgb(255, 199, 31);
+    -unity-text-align: lower-left;
+    margin-top: -7px;
+    margin-right: -7px;
+    margin-bottom: -7px;
+    margin-left: -7px;
+    -unity-font-style: italic;
+}

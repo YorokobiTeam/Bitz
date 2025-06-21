@@ -4,8 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MapMetadataObject", menuName = "Scriptable Objects/MapMetadataObject")]
 public class MapMetadataObject : ScriptableObject
 {
-    [SerializeField, DontCreateProperty]
-    public string mapID;
+    public string mapID { get; private set; }
 
     public string mapTitle;
 

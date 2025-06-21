@@ -1,0 +1,134 @@
+.main-menu-button {
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    -unity-font-definition: url("project://database/Assets/UI/Assets/fonts/HelveticaCondensed.ttf?fileID=12800000&guid=b4022faa5c6f53944b53dc5a745f0067&type=3#HelveticaCondensed");
+    bottom: 0;
+    right: auto;
+    position: relative;
+    left: 0;
+    -unity-text-align: middle-left;
+    color: rgb(0, 0, 0);
+    font-size: 50px;
+    -unity-font-style: normal;
+    white-space: nowrap;
+    padding: 60px;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out-cubic;
+    margin: 0 0 10px 0;
+    transform-origin: left bottom;
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
+}
+
+.focused-on-recent-plays {
+    background-color: rgb(0, 0, 0);
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+}
+
+.main-menu-button:hover {
+    color: white;
+    scale: 1.1 1.1;
+    margin-bottom: 10px;
+    background-image: url("project://database/Assets/Sprites/menu-item.png?fileID=2800000&guid=93257b6f528c92c419a5485488596dd8&type=3#menu-item");
+    -unity-background-scale-mode: scale-and-crop;
+    font-size: 60px;
+    transform-origin: left bottom;
+}
+
+.main-menu-button:active {
+    opacity: 0.86;
+}
+
+.right-container {
+    padding: 0 0 0 600px;
+}
+
+#Root > #PlayHistory > .p-5 > .text-xl {
+    word-spacing: -2px;
+    letter-spacing: -2px;
+    margin-bottom: -22px;
+}
+
+#Root > #PlayHistory > .h-3-4 > .unity-label {
+    -unity-text-align: upper-center;
+    font-size: 50px;
+    color: black;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in;
+}
+
+#MapCard {
+    transform-origin: right top;
+}
+
+.enlarge-card-0 {
+    scale: 2 2;
+    margin: 0 0 100px 0;
+    border-left-color: rgb(255, 215, 0);
+    border-right-color: rgb(255, 215, 0);
+    border-top-color: rgb(255, 215, 0);
+    border-bottom-color: rgb(255, 215, 0);
+    border-top-width: 3px;
+    border-right-width: 0;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+}
+
+.enlarge-card-1 {
+    scale: 1.8 1.8;
+    margin: 0 0 80px 0;
+}
+
+.enlarge-card-2 {
+    scale: 1.6 1.6;
+    margin: 0 0 60px 0;
+}
+
+.enlarge-card-3 {
+    scale: 1.4 1.4;
+    margin: 0 0 40px 0;
+}
+
+#MapList > * {
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.menu-dist-0 {
+    color: rgb(255, 255, 255);
+    scale: 1.1 1;
+    margin-bottom: 10px;
+    background-image: url("project://database/Assets/Sprites/menu-item.png?fileID=2800000&guid=93257b6f528c92c419a5485488596dd8&type=3#menu-item");
+    -unity-background-scale-mode: scale-and-crop;
+    font-size: 121px;
+    transform-origin: left;
+}
+
+.menu-dist-1 {
+    scale: 1 1;
+    font-size: 99px;
+}
+
+.menu-dist-2 {
+    font-size: 60px;
+}
+
+.recent-plays-title {
+    color: rgb(0, 0, 0);
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.recent-plays-title-selected {
+    background-color: black;
+    color: rgb(255, 255, 255);
+}
+
+.menu-dist-3 {
+    font-size: 53px;
+}
+
+.menu-dist-4 {
+    scale: 0.85 0.85;
+}

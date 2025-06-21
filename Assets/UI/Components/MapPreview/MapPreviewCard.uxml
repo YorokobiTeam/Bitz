@@ -1,7 +1,7 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/Utility.uss?fileID=7433441132597879392&amp;guid=9a618524c4ee60641bde1444316fde40&amp;type=3#Utility" />
-    <Style src="project://database/Assets/UI/UIComponents.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3#UIComponents" />
-    <ui:VisualElement name="Root" data-source="project://database/Assets/UI/Components/MapPreview/MapMetadataObject.asset?fileID=11400000&amp;guid=2d3a70d0eea2b5f4786736312b881c62&amp;type=2#MapMetadataObject" style="flex-grow: 1; background-color: rgb(0, 0, 0); flex-direction: row; -unity-font-definition: url(&quot;project://database/Assets/Fonts/HelveticaCompressed.otf?fileID=12800000&amp;guid=3d6e81cc80a1cad43a72f30d12ef93ca&amp;type=3#HelveticaCompressed&quot;);">
+    <Style src="project://database/Assets/UI/Components/MapPreview/MapPreviewCard.uss?fileID=7433441132597879392&amp;guid=a6b99f2f7dc364b4bb8be7d46a168810&amp;type=3" />
+    <Style src="project://database/Assets/UI/Index.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3" />
+    <ui:VisualElement focusable="false" name="Root" data-source="project://database/Assets/UI/Components/MapPreview/MapMetadataObject.asset?fileID=11400000&amp;guid=2d3a70d0eea2b5f4786736312b881c62&amp;type=2#MapMetadataObject" style="flex-grow: 1; background-color: rgb(0, 0, 0); flex-direction: row; -unity-font-definition: url(&quot;project://database/Assets/Fonts/HelveticaCompressed.otf?fileID=12800000&amp;guid=3d6e81cc80a1cad43a72f30d12ef93ca&amp;type=3#HelveticaCompressed&quot;);">
         <ui:VisualElement data-source-path="coverArtwork" style="flex-grow: 1; background-size: 75% 75%; background-position-x: center 0; -unity-background-scale-mode: scale-and-crop; max-width: 100px; min-width: 100px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
             <Bindings>
                 <ui:DataBinding property="style.backgroundImage" binding-mode="ToTarget" />
@@ -19,9 +19,9 @@
                 <ui:VisualElement class="w-one-half" style="flex-grow: 1;">
                     <ui:VisualElement class="text-lg">
                         <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/SongAuthorIcon.png?fileID=2800000&amp;guid=5a1052a4e12b2ea4d9b35970dabca330&amp;type=3#SongAuthorIcon&quot;); height: 25px; align-self: center; justify-content: space-between; align-items: auto; max-width: 25px; -unity-background-scale-mode: scale-to-fit;" />
-                            <ui:VisualElement data-source-path="musicAuthor" class="w-five-sixths" style="flex-grow: 1; justify-content: center;">
-                                <ui:Label text="CosMo, GAiA" class="m-0 map-info" style="-unity-text-align: lower-left; width: 100%;">
+                            <ui:VisualElement class="supp-icon" />
+                            <ui:VisualElement data-source-path="musicAuthor" class="w-five-sixths name-container" style="flex-grow: 1; justify-content: center;">
+                                <ui:Label text="CosMo, GAiA" style="-unity-text-align: lower-left; width: 100%;">
                                     <Bindings>
                                         <ui:DataBinding property="text" binding-mode="ToTarget" />
                                     </Bindings>
@@ -29,9 +29,9 @@
                             </ui:VisualElement>
                         </ui:VisualElement>
                         <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/MapAuthorIcon.png?fileID=2800000&amp;guid=cb45e5ea004e9ef4c8b8683c633cbbdd&amp;type=3#MapAuthorIcon&quot;); -unity-background-scale-mode: scale-to-fit; height: 25px; max-width: 25px;" />
-                            <ui:VisualElement class="w-five-sixths" style="flex-grow: 1; justify-content: center;">
-                                <ui:Label text="DanketsUMaps" data-source-path="mapAuthor" class="m-0 map-info" style="-unity-text-align: lower-left; width: 100%;">
+                            <ui:VisualElement name="SongAuthorNameContainer" class="supp-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/MapAuthorIcon.png?fileID=2800000&amp;guid=cb45e5ea004e9ef4c8b8683c633cbbdd&amp;type=3#MapAuthorIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
+                            <ui:VisualElement name="MapAuthorNameContainer" class="w-five-sixths name-container aictr">
+                                <ui:Label text="DanketsUMaps" data-source-path="mapAuthor" style="-unity-text-align: lower-left; width: 100%;">
                                     <Bindings>
                                         <ui:DataBinding property="text" binding-mode="ToTarget" />
                                     </Bindings>

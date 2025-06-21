@@ -1,0 +1,73 @@
+.title-container {
+    overflow: hidden;
+}
+
+.go-hide {
+    translate: -100% 0;
+}
+
+.h-one-half {
+    height: 50%;
+}
+
+.h-1-4 {
+    height: 25%;
+}
+
+.text-right {
+    -unity-text-align: lower-right;
+}
+
+.h-3-4 {
+    height: 75%;
+}
+
+.h-1-3 {
+    height: 33.33%;
+}
+
+.aictr {
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.h-40-p {
+    height: 40%;
+}
+
+.h-2-3 {
+    height: 33.33%;
+}
+
+.text-black {
+}
+
+.font-condensed {
+    -unity-font-definition: url("project://database/Assets/UI/Assets/fonts/HelveticaCondensed.ttf?fileID=12800000&guid=b4022faa5c6f53944b53dc5a745f0067&type=3#HelveticaCondensed");
+}
+
+.font-content {
+    -unity-font-definition: url("project://database/Assets/Fonts/Lexend.ttf?fileID=12800000&guid=0ae250f77a58f624a8ed65119e79cb9e&type=3#Lexend");
+}
+
+.p-5 {
+    padding: 5px 5px 5px 5px;
+}
+
+.logo-ve {
+    background-image: url("project://database/Assets/UI/Assets/logos/bitz_main.png?fileID=-6359447552312523699&guid=3c056e002ef41694d99bab7ab6fa5451&type=3#bitzz_0");
+    background-position-x: left 0;
+    background-position-y: top 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.text-xl {
+    font-size: 120px;
+}
+
+.bg-move-forward {
+    transition-duration: 5s;
+    transition-timing-function: ease-in;
+    background-position-x: left 55%;
+    background-size: cover;
+}
