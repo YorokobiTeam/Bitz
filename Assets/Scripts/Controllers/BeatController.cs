@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BeatController : MonoBehaviour
 {
 
     public BeatPrefab beatPrefab;
     public BeatmapData mapData;
-    private readonly Queue<BeatPrefab> activeBeatObjects = new();
+    private Queue<BeatPrefab> activeBeatObjects = new();
     public GameObject hitboxObject;
     public GameData gameData;
 
@@ -37,8 +38,11 @@ public class BeatController : MonoBehaviour
             beatObj.data = beatData;
             activeBeatObjects.Enqueue(beatObj);
         }
+        OnFinishLoadingBeats?.Invoke();
     }
 
+
+    public event NotifyFinishLoadingBeats OnFinishLoadingBeats;
 
     private void LoadBeatmapData()
     {
@@ -50,6 +54,7 @@ public class BeatController : MonoBehaviour
     {
         if (beat == null) return;
         if (reason is DestructionReason.OutOfBounds) this.NotifyBeatHit(HitResult.Missed, -1f);
+        Destroy(beat.gameObject);
     }
 
     public event NotifyBeatHit OnNotifyBeatHit;
@@ -61,10 +66,70 @@ public class BeatController : MonoBehaviour
         Debug.Log(distanceDiff);
     }
 
-    public HitResult tryHit()
+
+    public void TryHit(InputAction.CallbackContext callback)
     {
-        return HitResult.Ignored;
+
+        var beat = this.activeBeatObjects.Peek();
+        var inputDirection = callback.ReadValue<Vector2>();
+
+
+        var diff = beat.transform.position.x - this.hitboxObject.transform.position.x;
+        var dist = Mathf.Abs(diff);
+        var hitResult = this.GetHitResult(diff, dist);
+        if (hitResult != HitResult.Ignored)
+        {
+            BeatDirection beatDirection = BeatDirection.Up;
+            if (inputDirection.x > 0) beatDirection = BeatDirection.Right;
+            if (inputDirection.x < 0) beatDirection = BeatDirection.Left;
+            if (inputDirection.y > 0) beatDirection = BeatDirection.Up;
+            if (inputDirection.y < 0) beatDirection = BeatDirection.Down;
+
+            if (beatDirection != beat.data.beatDirection)
+            {
+                hitResult = HitResult.Missed;
+            }
+            switch (hitResult)
+            {
+                case HitResult.Missed:
+                case HitResult.Cool:
+                case HitResult.Nice:
+                case HitResult.Epic:
+                    DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
+                    break;
+            }
+
+        }
+        this.NotifyBeatHit(hitResult, diff);
+
     }
+
+    public HitResult GetHitResult(float diff, float dist)
+    {
+        if (diff >= 0)
+        {
+            if (dist > gameData.hitRegisterThreshold.Item2)
+                return HitResult.Ignored;
+            if (dist > gameData.niceHitRegisterThreshold.Item2)
+                return HitResult.Missed;
+            if (dist > gameData.coolHitRegisterThreshold.Item2)
+                return HitResult.Nice;
+            if (dist > gameData.epicHitRegisterThreshold.Item2)
+                return HitResult.Cool;
+            return HitResult.Epic;
+        }
+        else
+        {
+            if (dist > gameData.niceHitRegisterThreshold.Item1)
+                return HitResult.Missed;
+            if (dist > gameData.coolHitRegisterThreshold.Item1)
+                return HitResult.Nice;
+            if (dist > gameData.epicHitRegisterThreshold.Item1)
+                return HitResult.Cool;
+            return HitResult.Epic;
+        }
+    }
+
 
     public void Start()
     {
@@ -77,13 +142,36 @@ public class BeatController : MonoBehaviour
         activeBeatObjects.TryPeek(out BeatPrefab frontOfQueue);
         if (frontOfQueue != null)
         {
-            var distToHitbox = frontOfQueue.transform.position.x - hitboxObject.transform.position.x;
-            if (distToHitbox >= -gameData.hitRegisterThreshold.Item1) return;
-            activeBeatObjects.Dequeue();
-            NotifyBeatHit(HitResult.Missed, Mathf.Abs(distToHitbox));
+            var secondInQueue = activeBeatObjects.Skip(1).FirstOrDefault();
+            var xHitbox = this.hitboxObject.transform.position.x;
+            var xFoq = frontOfQueue.transform.position.x;
+            if (secondInQueue != null)
+            {
+                var xSoq = secondInQueue.transform.position.x;
+                if (xFoq - xHitbox < 0 && Mathf.Abs(xFoq - xHitbox) > Mathf.Abs(xSoq - xHitbox))
+                {
+                    this.MissBeat();
+                    return;
+                }
+            }
+
+            if (xFoq - xHitbox < 0 && (xHitbox - xFoq < this.gameData.hitRegisterThreshold.Item1)) this.MissBeat();
+
         }
     }
 
-}
+    private void MissBeat()
+    {
+        if (this.activeBeatObjects.Peek() != null)
+        {
 
+            NotifyBeatHit(HitResult.Missed, Mathf.Abs(this.activeBeatObjects.Peek().transform.position.x - this.hitboxObject.transform.position.x));
+            var foq = this.activeBeatObjects.Dequeue();
+
+        }
+
+    }
+
+}
+public delegate void NotifyFinishLoadingBeats();
 public delegate void NotifyBeatHit(HitResult hitResult, float distanceDiff);

@@ -16,9 +16,9 @@ public class BeatPrefab : MonoBehaviour
     public void FixedUpdate()
     {
         var pos = Camera.main.WorldToScreenPoint(transform.position);
-        if (pos.x < (Screen.safeArea.xMin))
+        if (pos.x < (Screen.safeArea.xMin) - 5)
         {
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

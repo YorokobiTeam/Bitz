@@ -1,16 +1,37 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public GameData gamedata;
+    public InputAction hitAction;
+    public BeatController beatController;
+
+    public void Start()
     {
-        
+        hitAction = InputSystem.actions.FindAction("Hit");
+        this.hitAction.performed += Hit;
+        this.gamedata.score = 0;
+        this.beatController.OnNotifyBeatHit += ProcessHitResult;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Hit(InputAction.CallbackContext callback)
     {
-        
+        this.beatController.TryHit(callback);
     }
+
+    public void ProcessHitResult(HitResult hitResult, float diff)
+    {
+        var multiplier = hitResult switch
+        {
+            HitResult.Missed => 0,
+            HitResult.Nice => 2,
+            HitResult.Cool => 4,
+            HitResult.Epic => 6,
+            _ => 0
+        };
+        this.gamedata.score += Mathf.FloorToInt(multiplier * diff * 100);
+    }
+
+
 }
