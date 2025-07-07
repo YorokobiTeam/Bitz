@@ -11,8 +11,13 @@ public class BeatController : MonoBehaviour
     private Queue<BeatPrefab> activeBeatObjects = new();
     public GameObject hitboxObject;
     public GameData gameData;
+    [SerializeField] GameObject hitEffect;
+    [SerializeField] GameObject missEffect;
+    [SerializeField] GameObject goodEffect;
+    [SerializeField] GameObject perfectEffect;
 
-    private void SpawnBeats()
+
+	private void SpawnBeats()
     {
         foreach (BeatData beatData in mapData.beats)
         {
@@ -85,17 +90,23 @@ public class BeatController : MonoBehaviour
             if (inputDirection.y > 0) beatDirection = BeatDirection.Up;
             if (inputDirection.y < 0) beatDirection = BeatDirection.Down;
 
-            if (beatDirection != beat.data.beatDirection)
-            {
-                hitResult = HitResult.Missed;
-            }
+            //if (beatDirection != beat.data.beatDirection)
+            //{
+            //    hitResult = HitResult.Missed;
+            //}
             switch (hitResult)
             {
-                case HitResult.Missed:
-                case HitResult.Cool:
-                case HitResult.Nice:
-                case HitResult.Epic:
-                    DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
+				case HitResult.Cool:
+					Instantiate(hitEffect, new Vector2(-6.56f, 3.47f), hitEffect.transform.rotation);
+					DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
+					break;
+				case HitResult.Nice:
+					Instantiate(goodEffect, new Vector2(-6.56f, 3.47f), goodEffect.transform.rotation);
+					DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
+					break;
+				case HitResult.Epic:
+					Instantiate(perfectEffect, new Vector2(-6.56f, 3.47f), perfectEffect.transform.rotation);
+					DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
                     break;
             }
 
@@ -164,8 +175,8 @@ public class BeatController : MonoBehaviour
     {
         if (this.activeBeatObjects.Peek() != null)
         {
-
-            NotifyBeatHit(HitResult.Missed, Mathf.Abs(this.activeBeatObjects.Peek().transform.position.x - this.hitboxObject.transform.position.x));
+			Instantiate(missEffect, new Vector2(-6.56f, 3.47f), missEffect.transform.rotation);
+			NotifyBeatHit(HitResult.Missed, Mathf.Abs(this.activeBeatObjects.Peek().transform.position.x - this.hitboxObject.transform.position.x));
             var foq = this.activeBeatObjects.Dequeue();
 
         }
