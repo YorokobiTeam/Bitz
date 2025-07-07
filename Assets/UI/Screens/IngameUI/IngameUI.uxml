@@ -1,0 +1,8 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Index.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3#Index" />
+    <ui:Label text="Label" data-source="project://database/Assets/UI/Screens/IngameUI/IngameUIData.asset?fileID=11400000&amp;guid=f6f27739f2112f3408833dc300c8a808&amp;type=2#IngameUIData" class="text-right text-xl">
+        <Bindings>
+            <ui:DataBinding property="text" data-source-path="score" binding-mode="ToTarget" data-source="project://database/Assets/Scripts/Models/GameData.asset?fileID=11400000&amp;guid=4cd6e8a44040b834cba86c16705e3c46&amp;type=2#GameData" />
+        </Bindings>
+    </ui:Label>
+</ui:UXML>
