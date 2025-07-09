@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour
     public GameData gamedata;
     public InputAction hitAction;
     public BeatController beatController;
+    public UIController loader;
 
     public void Start()
     {
@@ -13,6 +14,19 @@ public class GameController : MonoBehaviour
         this.hitAction.performed += Hit;
         this.gamedata.score = 0;
         this.beatController.OnNotifyBeatHit += ProcessHitResult;
+        loader.OnFinishLoadingAssets += Loader_OnFinishLoadingAssets;
+        beatController.OnFinishLoadingBeats += BeatController_OnFinishLoadingBeats;
+    }
+
+    private void BeatController_OnFinishLoadingBeats()
+    {
+
+    }
+
+    private void Loader_OnFinishLoadingAssets()
+    {
+        loader.musicPlayer.Play();
+
     }
 
     public void Hit(InputAction.CallbackContext callback)

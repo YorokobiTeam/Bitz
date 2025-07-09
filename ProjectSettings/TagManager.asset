@@ -12,9 +12,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Hitbox
+  - Beat
+  - Subdetail
   - 
   - 
   - 
@@ -42,6 +42,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background UI
+    uniqueID: 1909636439
+    locked: 0
   - name: Button
     uniqueID: 2449008401
     locked: 0
@@ -50,3 +53,6 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  - Beats
+  - UI
+  - Subdetail

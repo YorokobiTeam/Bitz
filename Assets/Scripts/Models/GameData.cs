@@ -11,6 +11,9 @@ public class GameData : ScriptableObject
     public (float, float) niceHitRegisterThreshold = (0.9f, 1.0f);
     public (float, float) coolHitRegisterThreshold = (0.4f, 0.5f);
     public (float, float) epicHitRegisterThreshold = (0.2f, 0.3f);
-
+    public string beatMapFileDir;
+    public string musicFileDir;
+    public string backgroundImageDir;
+    public string albumCoverImageDir;
     public Queue<BeatPrefab> beatQueue;
 }
