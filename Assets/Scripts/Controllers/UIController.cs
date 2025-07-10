@@ -46,6 +46,12 @@ public class UIController : MonoBehaviour
             ImageConversion.LoadImage(albumCoverTexture, albumCoverTextureData);
             totalLoadedAssets++;
 
+            TextureScaler.scale(bgTexture, Screen.width, Screen.height);
+            TextureScaler.scale(albumCoverTexture, 250, 250);
+
+            var bgSprite = Sprite.Create(bgTexture, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f));
+            var albumCoverSrpite = Sprite.Create(albumCoverTexture, new Rect(0, 0, 250, 250), new Vector2(0.5f, 0.5f));
+
 
             importer.Import(gameData.musicFileDir);
 
