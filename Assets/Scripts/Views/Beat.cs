@@ -13,9 +13,9 @@ public class BeatPrefab : MonoBehaviour
         {
             this.transform.eulerAngles = new Vector3(0, 0, this.data.beatDirection switch
             {
-                BeatDirection.Up => 180f,
+                BeatDirection.Up => 90f,
                 BeatDirection.Down => -90f,
-                BeatDirection.Left => 90f,
+                BeatDirection.Left => 180f,
                 BeatDirection.Right => 0f,
                 _ => 0
             });

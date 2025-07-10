@@ -40,6 +40,7 @@ public class BeatController : MonoBehaviour
     {
         // For now just read the test beatmap (wildly inaccurate but something is more than nothing right?)
         this.mapData = BeatUtils.ReadBeatmap(gameData.beatMapFileDir);
+        this.gameData.beatmapData = mapData;
     }
 
     public void DestroyBeat(BeatPrefab beat, DestructionReason reason)
@@ -70,12 +71,14 @@ public class BeatController : MonoBehaviour
         var hitResult = this.GetHitResult(diff, dist);
         if (hitResult != HitResult.Ignored)
         {
-            BeatDirection beatDirection = BeatDirection.Up;
+            BeatDirection? beatDirection = null;
             if (inputDirection.x > 0) beatDirection = BeatDirection.Right;
             if (inputDirection.x < 0) beatDirection = BeatDirection.Left;
             if (inputDirection.y > 0) beatDirection = BeatDirection.Up;
             if (inputDirection.y < 0) beatDirection = BeatDirection.Down;
-            if (!beatDirection.Equals(beat.data.beatDirection))
+            Debug.Log(inputDirection);
+            Debug.Log(beat.data.beatDirection);
+            if (beatDirection is null || !(beatDirection == (beat.data.beatDirection)))
             {
                 hitResult = HitResult.Missed;
             }

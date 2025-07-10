@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GameData", menuName = "Scriptable Objects/GameData")]
 public class GameData : ScriptableObject
 {
+
     public BeatmapData beatmapData;
     public long score;
     public bool isPaused;

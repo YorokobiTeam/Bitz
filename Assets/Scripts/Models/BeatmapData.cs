@@ -10,6 +10,6 @@ public class BeatmapData
     public List<BeatData> beats;
 
     public string songTitle;
-
     public string songAuthor;
+
 }
