@@ -20,10 +20,7 @@ public class UIController : MonoBehaviour
     public TMP_Text songAuthor;
 
     public short totalLoadedAssets = 0;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void Awake()
-    {
-    }
+
 
     private void OnAudioLoaded(AudioClip obj)
     {

@@ -14,7 +14,6 @@ public class HitIndicatorController : MonoBehaviour
     public void Start()
     {
         beatController.OnNotifyBeatHit += BeatController_OnNotifyBeatHit;
-        animator.Play("Exit");
     }
 
     private void BeatController_OnNotifyBeatHit(HitResult hitResult, float distanceDiff)

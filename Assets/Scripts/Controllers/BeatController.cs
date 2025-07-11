@@ -9,11 +9,12 @@ public class BeatController : MonoBehaviour
 
     public BeatPrefab beatPrefab;
     public BeatmapData mapData;
-    private Queue<BeatPrefab> activeBeatObjects = new();
+    private readonly Queue<BeatPrefab> activeBeatObjects = new();
     public GameObject hitboxObject;
     public GameData gameData;
+    public GameObject beatHitbox;
 
-    private void SpawnBeats()
+    internal void SpawnBeats()
     {
         foreach (BeatData beatData in mapData.beats)
         {
@@ -21,26 +22,55 @@ public class BeatController : MonoBehaviour
                 hitboxObject.transform.position + new Vector3(mapData.offsetMs * mapData.speed + (mapData.speed / 1000) * beatData.start, 0)
                 , Quaternion.identity
                                 );
-            var rb = beatObj.GetComponent<Rigidbody2D>();
-            rb.linearDamping = 0;
-            rb.angularDamping = 0;
-            rb.angularVelocity = 0;
-            rb.linearVelocityX = -mapData.speed;
+            var rb = beatObj.rb;
+            rb.linearDamping = 0f;
+            rb.angularDamping = 0f;
+            rb.angularVelocity = 0f;
+            rb.linearVelocityX = 0f;
 
             beatObj.data = beatData;
             activeBeatObjects.Enqueue(beatObj);
         }
-        OnFinishLoadingBeats?.Invoke();
+        SetHitboxOrientation();
+        OnFinishSpawningBeats?.Invoke();
     }
 
 
-    public event NotifyFinishLoadingBeats OnFinishLoadingBeats;
+    public event NotifyFinishLoadingBeats OnFinishSpawningBeats;
 
     private void LoadBeatmapData()
     {
-        // For now just read the test beatmap (wildly inaccurate but something is more than nothing right?)
         this.mapData = BeatUtils.ReadBeatmap(gameData.beatMapFileDir);
         this.gameData.beatmapData = mapData;
+    }
+    public void StartBeats()
+    {
+        foreach (BeatPrefab beat in this.activeBeatObjects)
+        {
+
+            beat.rb.linearVelocityX = -gameData.beatmapData.speed;
+        }
+    }
+
+    public void SetHitboxOrientation()
+    {
+        this.beatHitbox.transform.eulerAngles = new Vector3(0, 0, this.activeBeatObjects.Peek().data.beatDirection switch
+        {
+            BeatDirection.Up => 90f,
+            BeatDirection.Down => -90f,
+            BeatDirection.Left => 180f,
+            BeatDirection.Right => 0f,
+            _ => 0
+        });
+    }
+
+    public void PauseBeats()
+    {
+        foreach (BeatPrefab beat in this.activeBeatObjects)
+        {
+
+            beat.rb.linearVelocityX = 0;
+        }
     }
 
     public void DestroyBeat(BeatPrefab beat, DestructionReason reason)
@@ -55,8 +85,7 @@ public class BeatController : MonoBehaviour
     protected virtual void NotifyBeatHit(HitResult hitResult, float distanceDiff)
     {
         OnNotifyBeatHit?.Invoke(hitResult, distanceDiff);
-        Debug.Log(hitResult);
-        Debug.Log(distanceDiff);
+        SetHitboxOrientation();
     }
 
 
@@ -119,7 +148,6 @@ public class BeatController : MonoBehaviour
     public void Start()
     {
         LoadBeatmapData();
-        SpawnBeats();
     }
 
     public void Update()

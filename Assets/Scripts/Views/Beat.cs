@@ -3,6 +3,11 @@ using UnityEngine;
 public class BeatPrefab : MonoBehaviour
 {
     public BeatData data = null;
+    internal Rigidbody2D rb;
+    public void Awake()
+    {
+        this.rb = GetComponent<Rigidbody2D>();
+    }
     public void Start()
     {
         if (data == null)
