@@ -1,8 +1,16 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Index.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3#Index" />
-    <ui:Label text="Label" data-source="project://database/Assets/UI/Screens/IngameUI/IngameUIData.asset?fileID=11400000&amp;guid=f6f27739f2112f3408833dc300c8a808&amp;type=2#IngameUIData" class="text-right text-xl">
-        <Bindings>
-            <ui:DataBinding property="text" data-source-path="score" binding-mode="ToTarget" data-source="project://database/Assets/Scripts/Models/GameData.asset?fileID=11400000&amp;guid=4cd6e8a44040b834cba86c16705e3c46&amp;type=2#GameData" />
-        </Bindings>
-    </ui:Label>
+    <ui:VisualElement name="Root" style="flex-grow: 1;">
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement name="VisualElement" class="aictr map-info-container" style="height: 334px; width: 1859px; background-image: url(&quot;project://database/Assets/Sprites/menu-item-reflected.png?fileID=2800000&amp;guid=590316815999631449f487155318de4d&amp;type=3#menu-item-reflected&quot;); position: absolute; right: 0; scale: 1 1; opacity: 0.8;">
+                <ui:VisualElement name="UIAlbumCover" class="rounded-full" style="width: 250px; height: 250px; background-image: url(&quot;project://database/Assets/Sprites/K-ON-AlbumCoverArt.jpeg?fileID=2800000&amp;guid=b434b2e5588b0de42b8344c18ddeec55&amp;type=3#K-ON-AlbumCoverArt&quot;);" />
+                <ui:VisualElement class="h-full" style="flex-grow: 1;">
+                    <ui:Label text="Label" data-source="project://database/Assets/Scripts/Models/GameData.asset?fileID=11400000&amp;guid=4cd6e8a44040b834cba86c16705e3c46&amp;type=2#GameData" data-source-path="beatmapData.songTitle" class="text-xl text-right map-info-container-title map-info-container-padding" />
+                    <ui:Label text="Label" data-source="project://database/Assets/Scripts/Models/GameData.asset?fileID=11400000&amp;guid=4cd6e8a44040b834cba86c16705e3c46&amp;type=2#GameData" data-source-path="beatmapData.songAuthor" class="text-right map-info-container-title map-info-container-padding" style="font-size: 69px; -unity-text-align: upper-right;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;" />
+        <ui:VisualElement style="flex-grow: 1;" />
+    </ui:VisualElement>
 </ui:UXML>

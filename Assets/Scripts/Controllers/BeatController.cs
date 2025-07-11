@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,51 +9,68 @@ public class BeatController : MonoBehaviour
 
     public BeatPrefab beatPrefab;
     public BeatmapData mapData;
-    private Queue<BeatPrefab> activeBeatObjects = new();
+    private readonly Queue<BeatPrefab> activeBeatObjects = new();
     public GameObject hitboxObject;
     public GameData gameData;
-    [SerializeField] GameObject hitEffect;
-    [SerializeField] GameObject missEffect;
-    [SerializeField] GameObject goodEffect;
-    [SerializeField] GameObject perfectEffect;
+    public GameObject beatHitbox;
 
-
-	private void SpawnBeats()
+    internal void SpawnBeats()
     {
         foreach (BeatData beatData in mapData.beats)
         {
             var beatObj = Instantiate(beatPrefab,
-                hitboxObject.transform.position + new Vector3(mapData.offsetMs * mapData.speed + (mapData.speed / 100) * beatData.start, 0)
+                hitboxObject.transform.position + new Vector3(mapData.offsetMs * mapData.speed + (mapData.speed / 1000) * beatData.start, 0)
                 , Quaternion.identity
                                 );
-            var rb = beatObj.GetComponent<Rigidbody2D>();
-            rb.linearDamping = 0;
-            rb.angularDamping = 0;
-            rb.angularVelocity = 0;
-            rb.linearVelocityX = -mapData.speed;
-            beatObj.transform.rotation =
-                new Quaternion(0, 0,
-                    beatData.beatDirection switch
-                    {
-                        BeatDirection.Up => 90,
-                        BeatDirection.Down => -90,
-                        BeatDirection.Left => 180,
-                        BeatDirection.Right => 0,
-                        _ => 0
-                    }, 0);
+            var rb = beatObj.rb;
+            rb.linearDamping = 0f;
+            rb.angularDamping = 0f;
+            rb.angularVelocity = 0f;
+            rb.linearVelocityX = 0f;
+
             beatObj.data = beatData;
             activeBeatObjects.Enqueue(beatObj);
         }
-        OnFinishLoadingBeats?.Invoke();
+        SetHitboxOrientation();
+        OnFinishSpawningBeats?.Invoke();
     }
 
 
-    public event NotifyFinishLoadingBeats OnFinishLoadingBeats;
+    public event NotifyFinishLoadingBeats OnFinishSpawningBeats;
 
     private void LoadBeatmapData()
     {
-        // For now just read the test beatmap (wildly inaccurate but something is more than nothing right?)
-        this.mapData = BeatUtils.ReadBeatmap("test.json");
+        this.mapData = BeatUtils.ReadBeatmap(gameData.beatMapFileDir);
+        this.gameData.beatmapData = mapData;
+    }
+    public void StartBeats()
+    {
+        foreach (BeatPrefab beat in this.activeBeatObjects)
+        {
+
+            beat.rb.linearVelocityX = -gameData.beatmapData.speed;
+        }
+    }
+
+    public void SetHitboxOrientation()
+    {
+        this.beatHitbox.transform.eulerAngles = new Vector3(0, 0, this.activeBeatObjects.Peek().data.beatDirection switch
+        {
+            BeatDirection.Up => 90f,
+            BeatDirection.Down => -90f,
+            BeatDirection.Left => 180f,
+            BeatDirection.Right => 0f,
+            _ => 0
+        });
+    }
+
+    public void PauseBeats()
+    {
+        foreach (BeatPrefab beat in this.activeBeatObjects)
+        {
+
+            beat.rb.linearVelocityX = 0;
+        }
     }
 
     public void DestroyBeat(BeatPrefab beat, DestructionReason reason)
@@ -67,8 +85,7 @@ public class BeatController : MonoBehaviour
     protected virtual void NotifyBeatHit(HitResult hitResult, float distanceDiff)
     {
         OnNotifyBeatHit?.Invoke(hitResult, distanceDiff);
-        Debug.Log(hitResult);
-        Debug.Log(distanceDiff);
+        SetHitboxOrientation();
     }
 
 
@@ -78,39 +95,25 @@ public class BeatController : MonoBehaviour
         var beat = this.activeBeatObjects.Peek();
         var inputDirection = callback.ReadValue<Vector2>();
 
-
         var diff = beat.transform.position.x - this.hitboxObject.transform.position.x;
         var dist = Mathf.Abs(diff);
         var hitResult = this.GetHitResult(diff, dist);
         if (hitResult != HitResult.Ignored)
         {
-            BeatDirection beatDirection = BeatDirection.Up;
+            BeatDirection? beatDirection = null;
             if (inputDirection.x > 0) beatDirection = BeatDirection.Right;
             if (inputDirection.x < 0) beatDirection = BeatDirection.Left;
             if (inputDirection.y > 0) beatDirection = BeatDirection.Up;
             if (inputDirection.y < 0) beatDirection = BeatDirection.Down;
-
-            //if (beatDirection != beat.data.beatDirection)
-            //{
-            //    hitResult = HitResult.Missed;
-            //}
-            switch (hitResult)
+            Debug.Log(inputDirection);
+            Debug.Log(beat.data.beatDirection);
+            if (beatDirection is null || !(beatDirection == (beat.data.beatDirection)))
             {
-				case HitResult.Cool:
-					Instantiate(hitEffect, new Vector2(-6.56f, 3.47f), hitEffect.transform.rotation);
-					DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
-					break;
-				case HitResult.Nice:
-					Instantiate(goodEffect, new Vector2(-6.56f, 3.47f), goodEffect.transform.rotation);
-					DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
-					break;
-				case HitResult.Epic:
-					Instantiate(perfectEffect, new Vector2(-6.56f, 3.47f), perfectEffect.transform.rotation);
-					DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
-                    break;
+                hitResult = HitResult.Missed;
             }
-
+            Destroy(this.activeBeatObjects.Dequeue().gameObject);
         }
+
         this.NotifyBeatHit(hitResult, diff);
 
     }
@@ -145,7 +148,6 @@ public class BeatController : MonoBehaviour
     public void Start()
     {
         LoadBeatmapData();
-        SpawnBeats();
     }
 
     public void Update()
@@ -175,10 +177,8 @@ public class BeatController : MonoBehaviour
     {
         if (this.activeBeatObjects.Peek() != null)
         {
-			Instantiate(missEffect, new Vector2(-6.56f, 3.47f), missEffect.transform.rotation);
-			NotifyBeatHit(HitResult.Missed, Mathf.Abs(this.activeBeatObjects.Peek().transform.position.x - this.hitboxObject.transform.position.x));
-            var foq = this.activeBeatObjects.Dequeue();
-
+            NotifyBeatHit(HitResult.Missed, Mathf.Abs(this.activeBeatObjects.Peek().transform.position.x - this.hitboxObject.transform.position.x));
+            this.activeBeatObjects.Dequeue();
         }
 
     }

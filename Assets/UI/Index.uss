@@ -61,13 +61,47 @@
     -unity-background-scale-mode: scale-to-fit;
 }
 
-.text-xl {
-    font-size: 120px;
-}
-
 .bg-move-forward {
     transition-duration: 5s;
     transition-timing-function: ease-in;
     background-position-x: left 55%;
     background-size: cover;
+}
+
+.rounded-full {
+    border-top-left-radius: 1100px;
+    border-top-right-radius: 1100px;
+    border-bottom-right-radius: 1100px;
+    border-bottom-left-radius: 1100px;
+}
+
+.h-2-3 {
+    height: 33.33%;
+}
+
+.map-info-container {
+    align-self: center;
+    align-items: center;
+    padding-right: 50px;
+    padding-left: 277px;
+    flex-direction: row-reverse;
+    justify-content: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.text-xl {
+    font-size: 120px;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.map-info-container-padding {
+    margin-right: 69px;
+}
+
+.text-right {
+    -unity-text-align: lower-right;
 }

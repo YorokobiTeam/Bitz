@@ -7,15 +7,14 @@ using UnityEngine;
 class BeatUtils
 {
     private static readonly string tempTestDir = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Bitz");
-    public static BeatmapData ReadBeatmap(string saveName)
+    public static BeatmapData ReadBeatmap(string path)
     {
-        string saveFile = Path.Join(tempTestDir, saveName);
-        if (!File.Exists(saveFile))
+        if (!File.Exists(path))
         {
             return null;
         }
         return JsonUtility.FromJson<BeatmapData>(
-            File.ReadAllText(saveFile));
+            File.ReadAllText(path));
     }
     // Utility to make life easier for now
     public static void SaveBeatmap(BeatmapData bm, string saveName)
