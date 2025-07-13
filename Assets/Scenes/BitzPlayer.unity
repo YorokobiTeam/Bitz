@@ -1213,7 +1213,7 @@ GameObject:
   - component: {fileID: 331974560}
   - component: {fileID: 331974559}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: NiceCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1290,7 +1290,7 @@ GameObject:
   - component: {fileID: 344436044}
   - component: {fileID: 344436043}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: StatusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1577,7 +1577,7 @@ GameObject:
   - component: {fileID: 469799723}
   - component: {fileID: 469799722}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: MissedCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3249,12 +3249,12 @@ GameObject:
   - component: {fileID: 1056206296}
   - component: {fileID: 1056206295}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ResultStrip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1056206294
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3810,7 +3810,7 @@ GameObject:
   - component: {fileID: 1252238205}
   - component: {fileID: 1252238204}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: CoolCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4540,7 +4540,7 @@ GameObject:
   - component: {fileID: 1432906137}
   - component: {fileID: 1432906136}
   m_Layer: 5
-  m_Name: Image
+  m_Name: AlbumCover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4690,7 +4690,7 @@ GameObject:
   - component: {fileID: 1444752991}
   - component: {fileID: 1444752990}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5717,7 +5717,7 @@ GameObject:
   - component: {fileID: 1871722856}
   - component: {fileID: 1871722855}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: SongName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6051,7 +6051,7 @@ GameObject:
   - component: {fileID: 2002437751}
   - component: {fileID: 2002437750}
   m_Layer: 5
-  m_Name: Image
+  m_Name: EpicCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6204,6 +6204,8 @@ GameObject:
   - component: {fileID: 2008163236}
   - component: {fileID: 2008163235}
   - component: {fileID: 2008163234}
+  - component: {fileID: 2008163239}
+  - component: {fileID: 2008163238}
   m_Layer: 5
   m_Name: GameEndScreen
   m_TagString: Untagged
@@ -6301,6 +6303,63 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2008163238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008163233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c15857d41594a47b05f134661f6365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rankingTextS: {fileID: -5357697054966115204, guid: 3360108b01009824ba4b443f8c850682, type: 3}
+  rankingTextA: {fileID: -321647689753107005, guid: 03e805745ac6fb9478f8bb45027e6e1a, type: 3}
+  rankingTextB: {fileID: 5744714570792450861, guid: 831d15ac0bef07e43b474462519e4bd0, type: 3}
+  rankingTextF: {fileID: 1441430013448335214, guid: 34b112767499b794baa1d5a29716c83f, type: 3}
+  rankingS: {fileID: -3555998778368860902, guid: 60bb79bc8d55b1f42bca1a0a5f7a3211, type: 3}
+  rankingA: {fileID: 3072887319660220059, guid: bd11a728bd2fb6e4bbcc945a2327f6de, type: 3}
+  rankingB: {fileID: -7776083043210569719, guid: 460cad26c6ed14e46a9b072889740468, type: 3}
+  rankingF: {fileID: -7016536979624760489, guid: 3c69e6105947ab948b98503b8774cae2, type: 3}
+  albumCover: {fileID: 1432906136}
+  resultRanking: {fileID: 2056511721}
+  resultRankingText: {fileID: 100714780}
+  resultStrip: {fileID: 1056206295}
+  resultBox: {fileID: 208713331}
+  scoreBox: {fileID: 1388532782}
+  score: {fileID: 934416103}
+  countEpic: {fileID: 2084152760}
+  countCool: {fileID: 1483517089}
+  countNice: {fileID: 1172980018}
+  countMissed: {fileID: 1147997117}
+  statusText: {fileID: 344436043}
+  songName: {fileID: 1871722855}
+  songAuthor: {fileID: 665689702}
+  mapAuthor: {fileID: 1039327511}
+--- !u!95 &2008163239
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008163233}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9efea1e03ece2374aaeb97654f299d39, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2056511719
 GameObject:
   m_ObjectHideFlags: 0
