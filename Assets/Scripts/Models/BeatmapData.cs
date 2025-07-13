@@ -12,4 +12,6 @@ public class BeatmapData
     public string songTitle;
     public string songAuthor;
 
+    public string mapAuthor;
+
 }

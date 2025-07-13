@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class HitIndicatorController : MonoBehaviour
 {
+    public GameData gameData;
     public BeatController beatController;
     public Animator animator;
     public SpriteRenderer spriteRenderer;

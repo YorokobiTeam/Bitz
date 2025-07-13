@@ -12,9 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157e8f75894d5ab40be8f834a3c8e9f2, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  score: 7582
+  gameState: 3
+  score: 0
   isPaused: 0
+  scoreRankS: 2000
+  scoreRankA: 1000
+  scoreRankB: 500
   beatMapFileDir: C:\Users\maik\AppData\Roaming\Bitz\Freaky_Undulation.json
   musicFileDir: C:\Users\maik\AppData\Roaming\Bitz\MASTERPIECE.mp3
-  backgroundImageDir: C:\Users\maik\AppData\Roaming\Bitz\bg.jpg
+  backgroundImageDir: C:\Users\maik\AppData\Roaming\Bitz\Freaky_Undulations_7E_jacket.webp
   albumCoverImageDir: C:\Users\maik\AppData\Roaming\Bitz\album_cover.jpg
+  epicHitCount: 0
+  coolHitCount: 0
+  niceHitCount: 0
+  missedHitCount: 0
+  albumCoverSprite: {fileID: 0}
+  backgroundSprite: {fileID: 0}

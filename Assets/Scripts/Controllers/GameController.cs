@@ -4,10 +4,11 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public GameData gamedata;
+    public GameData gameData;
     public InputAction hitAction;
     public BeatController beatController;
     public UIController uiController;
@@ -23,13 +24,47 @@ public class GameController : MonoBehaviour
         hitAction = InputSystem.actions.FindAction("Hit");
         this.hitAction.performed += Hit;
         this.hitAction.performed += (InputAction.CallbackContext callback) => this.hitSfx.Play();
-        this.gamedata.score = 0;
+        this.gameData.score = 0;
         this.beatController.OnNotifyBeatHit += ProcessHitResult;
+        this.beatController.OnNotifyBeatHit += UpdateGameDataCount;
         uiController.OnFinishLoadingAssets += Loader_OnFinishLoadingAssets;
         beatController.SpawnBeats();
-        UpdateScoreText();
+        this.scoreText.text = UIUtils.GetScoreText(this.gameData.score, 9);
+        uiController.OnUpdateGameState += HandleGameStateUpdate;
     }
 
+    private void HandleGameStateUpdate(GameState gameState)
+    {
+        switch (gameState)
+        {
+            case GameState.Paused:
+                this.beatController.PauseBeats();
+                break;
+            case GameState.Ingame:
+                this.beatController.StartBeats();
+                break;
+        }
+    }
+
+    private void UpdateGameDataCount(HitResult hitResult, float distanceDiff)
+    {
+        switch (hitResult)
+        {
+
+            case HitResult.Missed:
+                this.gameData.missedHitCount++;
+                break;
+            case HitResult.Nice:
+                this.gameData.niceHitCount++;
+                break;
+            case HitResult.Cool:
+                this.gameData.coolHitCount++;
+                break;
+            case HitResult.Epic:
+                this.gameData.epicHitCount++;
+                break;
+        }
+    }
 
     private void Loader_OnFinishLoadingAssets()
     {
@@ -76,18 +111,13 @@ public class GameController : MonoBehaviour
         this.hitComboAnimator.SetInteger("ComboAmount", comboCount);
         this.hitComboText.text = this.comboCount.ToString() + "x";
 
-        this.gamedata.score += Mathf.FloorToInt(multiplier * diff * 100);
-        UpdateScoreText();
+        this.gameData.score += Mathf.FloorToInt(multiplier * diff * 100);
+        this.scoreText.text = UIUtils.GetScoreText(this.gameData.score, 9);
     }
-    private static readonly short totalNumberCount = 9;
-    void UpdateScoreText()
+
+    public void Retry()
     {
-        StringBuilder sb = new StringBuilder(this.gamedata.score.ToString(), totalNumberCount);
-        while (totalNumberCount - sb.Length > 0)
-        {
-            sb.Insert(0, "0");
-        }
-        this.scoreText.text = sb.ToString();
+        SceneManager.LoadScene("BitzPlayer");
     }
 
 

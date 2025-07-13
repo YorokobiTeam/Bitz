@@ -19,7 +19,7 @@ public class BeatController : MonoBehaviour
         foreach (BeatData beatData in mapData.beats)
         {
             var beatObj = Instantiate(beatPrefab,
-                hitboxObject.transform.position + new Vector3(mapData.offsetMs * mapData.speed + (mapData.speed / 1000) * beatData.start, 0)
+                hitboxObject.transform.position + new Vector3(mapData.offsetMs * mapData.speed + (mapData.speed / gameData.timeScale) * beatData.start, 0)
                 , Quaternion.identity
                                 );
             var rb = beatObj.rb;
