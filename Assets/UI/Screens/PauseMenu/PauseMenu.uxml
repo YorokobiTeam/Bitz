@@ -1,0 +1,17 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Screens/PauseMenu/PauseMenuStyling.uss?fileID=7433441132597879392&amp;guid=eb8c7e664ea041f45a7d22bf96ca1705&amp;type=3#PauseMenuStyling" />
+    <ui:VisualElement name="Root" style="flex-grow: 1; color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.47);">
+        <ui:VisualElement style="flex-grow: 1; justify-content: space-around; align-items: auto; align-self: center; width: 1661px; flex-direction: column;">
+            <ui:VisualElement name="Text" style="flex-grow: 1; align-self: center; width: 641px; flex-direction: row; align-items: center; justify-content: center;">
+                <ui:Label text="Paused" name="PauseText" style="font-size: 125px; -unity-text-align: lower-center; white-space: normal; text-overflow: clip; color: rgb(255, 255, 255);" />
+            </ui:VisualElement>
+            <ui:VisualElement name="PauseMenu" style="flex-grow: 1; align-self: flex-end; width: 644px; justify-content: center;">
+                <ui:VisualElement name="MenuPanel" style="flex-grow: 1; align-items: stretch; justify-content: flex-start; transition-duration: 2s; transition-timing-function: ease; flex-direction: column; align-self: stretch; background-size: 50% 50%; background-position-y: center 0; background-position-x: center 0; -unity-text-align: upper-left; width: 636px;">
+                    <ui:Button text="Resume&#10;" name="Resume" class="menu-button" style="background-image: url(&quot;project://database/Assets/Sprites/menu-item.png?fileID=2800000&amp;guid=93257b6f528c92c419a5485488596dd8&amp;type=3#menu-item&quot;); color: rgb(255, 255, 255);" />
+                    <ui:Button text="Settings" name="Settings" class="menu-button" style="color: rgb(255, 255, 255); background-image: none;" />
+                    <ui:Button text="Exit" name="Exit" class="menu-button" style="color: rgb(255, 255, 255); background-image: none;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,22 @@
+.menu-button {
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    -unity-font-definition: url("project://database/Assets/UI/Assets/fonts/HelveticaCondensed.ttf?fileID=12800000&guid=b4022faa5c6f53944b53dc5a745f0067&type=3#HelveticaCondensed");
+    bottom: 0;
+    right: auto;
+    position: relative;
+    left: 0;
+    -unity-text-align: middle-left;
+    color: rgb(0, 0, 0);
+    font-size: 50px;
+    -unity-font-style: normal;
+    white-space: nowrap;
+    padding: 60px;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out-cubic;
+    margin: 0 0 10px 0;
+    transform-origin: left bottom;
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
+}
