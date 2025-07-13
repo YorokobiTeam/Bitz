@@ -35,4 +35,19 @@ public class BeatPrefab : MonoBehaviour
             this.enabled = false;
         }
     }
+
+    public void AnimateOut(Vector3 from, Vector3 to)
+    {
+        LeanTween.scale(this.gameObject, new(0.3f, 0.3f), 0.6f).setEaseOutQuint();
+        LeanTween.move(
+            this.gameObject,
+            new Vector3[] { from, new(1, 5, 0), new(1, 5, 0), to },
+            0.6f
+        ).setEaseOutQuint().setOnComplete(() =>
+        {
+            Destroy(this.gameObject);
+        });
+        //this.GetComponent<SpriteRenderer>().sprite = null;
+
+    }
 }

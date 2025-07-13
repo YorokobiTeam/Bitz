@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157e8f75894d5ab40be8f834a3c8e9f2, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  score: 3978
+  score: 7582
   isPaused: 0
   beatMapFileDir: C:\Users\maik\AppData\Roaming\Bitz\Freaky_Undulation.json
-  musicFileDir: C:\Users\maik\AppData\Roaming\Bitz\test.mp3
+  musicFileDir: C:\Users\maik\AppData\Roaming\Bitz\MASTERPIECE.mp3
   backgroundImageDir: C:\Users\maik\AppData\Roaming\Bitz\bg.jpg
   albumCoverImageDir: C:\Users\maik\AppData\Roaming\Bitz\album_cover.jpg

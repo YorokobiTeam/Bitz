@@ -12,7 +12,7 @@ public class BeatController : MonoBehaviour
     private readonly Queue<BeatPrefab> activeBeatObjects = new();
     public GameObject hitboxObject;
     public GameData gameData;
-    public GameObject beatHitbox;
+    public GameObject pointsBox;
 
     internal void SpawnBeats()
     {
@@ -54,7 +54,7 @@ public class BeatController : MonoBehaviour
 
     public void SetHitboxOrientation()
     {
-        this.beatHitbox.transform.eulerAngles = new Vector3(0, 0, this.activeBeatObjects.Peek().data.beatDirection switch
+        this.hitboxObject.transform.eulerAngles = new Vector3(0, 0, this.activeBeatObjects.Peek().data.beatDirection switch
         {
             BeatDirection.Up => 90f,
             BeatDirection.Down => -90f,
@@ -77,7 +77,7 @@ public class BeatController : MonoBehaviour
     {
         if (beat == null) return;
         if (reason is DestructionReason.OutOfBounds) this.NotifyBeatHit(HitResult.Missed, -1f);
-        Destroy(beat.gameObject);
+        beat.AnimateOut(beat.transform.position, this.pointsBox.transform.position + new Vector3(0, 0, 1));
     }
 
     public event NotifyBeatHit OnNotifyBeatHit;
@@ -111,7 +111,7 @@ public class BeatController : MonoBehaviour
             {
                 hitResult = HitResult.Missed;
             }
-            Destroy(this.activeBeatObjects.Dequeue().gameObject);
+            DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
         }
 
         this.NotifyBeatHit(hitResult, diff);

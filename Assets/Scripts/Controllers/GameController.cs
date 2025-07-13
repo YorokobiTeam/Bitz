@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,6 +13,7 @@ public class GameController : MonoBehaviour
     public UIController uiController;
     public Animator hitComboAnimator;
     public AudioSource hitSfx;
+    public TMP_Text scoreText;
 
     public void Start()
     {
@@ -24,15 +27,14 @@ public class GameController : MonoBehaviour
         this.beatController.OnNotifyBeatHit += ProcessHitResult;
         uiController.OnFinishLoadingAssets += Loader_OnFinishLoadingAssets;
         beatController.SpawnBeats();
-
+        UpdateScoreText();
     }
 
 
     private void Loader_OnFinishLoadingAssets()
     {
         this.beatController.StartBeats();
-        this.uiController.musicPlayer.Play();
-
+        this.uiController.StartPlay();
     }
 
     public void Hit(InputAction.CallbackContext callback)
@@ -53,6 +55,16 @@ public class GameController : MonoBehaviour
             HitResult.Epic => 6,
             _ => 0
         };
+
+        multiplier += comboCount switch
+        {
+            < 10 => 0,
+            (>= 10 and < 20) => 5,
+            (>= 20 and < 30) => 8,
+            (>= 30 and < 40) => 10,
+            (>= 40) => 12
+        };
+
         if (hitResult == HitResult.Missed) this.comboCount = 0;
         else if (hitResult != HitResult.Ignored)
         {
@@ -65,6 +77,17 @@ public class GameController : MonoBehaviour
         this.hitComboText.text = this.comboCount.ToString() + "x";
 
         this.gamedata.score += Mathf.FloorToInt(multiplier * diff * 100);
+        UpdateScoreText();
+    }
+    private static readonly short totalNumberCount = 9;
+    void UpdateScoreText()
+    {
+        StringBuilder sb = new StringBuilder(this.gamedata.score.ToString(), totalNumberCount);
+        while (totalNumberCount - sb.Length > 0)
+        {
+            sb.Insert(0, "0");
+        }
+        this.scoreText.text = sb.ToString();
     }
 
 
