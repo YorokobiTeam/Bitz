@@ -47,6 +47,7 @@ public class UIController : MonoBehaviour
 
         TextureScaler.scale(bgTexture, 1920, 1080);
         TextureScaler.scale(albumCoverTexture, 200, 200);
+        TextureScaler.scale(bgTexture, 1920, 1080);
         var bgSprite = Sprite.Create(bgTexture, new Rect(0, 0, 1920, 1080), new Vector2(0.5f, 0.5f));
         var albumCoverSprite = Sprite.Create(albumCoverTexture, new Rect(0, 0, albumCoverTexture.width, albumCoverTexture.height), new Vector2(0.5f, 0.5f));
 

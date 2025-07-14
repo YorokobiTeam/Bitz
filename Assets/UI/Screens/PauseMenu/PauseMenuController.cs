@@ -1,50 +1,30 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class PauseMenuController : MonoBehaviour
 {
-    public static PauseMenuController instance;
+    public GameObject pauseMenu;
 
-    public bool isPaused { get ; private set; }
+    public bool isPaused { get; private set; } = false;
 
     private UIDocument uiDocument;
     private List<Button> menuButtons = new List<Button>();
     private int currentButtonIndex = 0;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-
-    }
-
-    private void Start()
-    {
-        uiDocument = GetComponent<UIDocument>();
-        VisualElement root = uiDocument.rootVisualElement;
-        
-        // Find all buttons in the pause menu
-        menuButtons.AddRange(root.Query<Button>().ToList());
-        // Set the first button as focused
-        if (menuButtons.Count > 0)
-        {
-            menuButtons[currentButtonIndex].Focus();
-        }
-        // Register navigation event
-        root.RegisterCallback<NavigationMoveEvent>(OnNavigate);
-    }
-
     private void Update()
     {
-        if(!isPaused) return;
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            ResumeGame(); 
-            uiDocument.rootVisualElement.style.display = DisplayStyle.None;
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
 
     }
@@ -85,9 +65,10 @@ public class PauseMenuController : MonoBehaviour
 
     public void PauseGame()
     {
-        isPaused = true;
         Time.timeScale = 0f;
-        currentButtonIndex = 0; // Reset the index when pausing
+        pauseMenu.SetActive(true);
+        isPaused = true;
+        currentButtonIndex = 0; 
         UpdateButtonSelection();
         uiDocument.rootVisualElement.style.display = DisplayStyle.Flex; // Show the pause menu
         // Maybe add disable spawning notes here and disable player's input?
@@ -96,8 +77,10 @@ public class PauseMenuController : MonoBehaviour
 
     public void ResumeGame()
     {
-        isPaused = false;
         Time.timeScale = 1f;
+        pauseMenu.SetActive(false);
+        isPaused = false;
+        uiDocument.rootVisualElement.style.display = DisplayStyle.None; // Hide the pause menu
     }
     private int WrapIndex(int indx, int min, int max)
     {
