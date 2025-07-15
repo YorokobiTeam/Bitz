@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 
 public class BeatmapData
 {
+    public Guid identifier = Guid.NewGuid();
     public float speed;
     public float offsetMs;
     public List<BeatData> beats;

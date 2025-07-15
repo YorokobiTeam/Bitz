@@ -4,10 +4,9 @@ using System;
 using System.IO;
 using UnityEngine;
 
-class BeatUtils
+static class BeatUtils
 {
-    private static readonly string tempTestDir = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Bitz");
-    public static BeatmapData ReadBeatmap(string path)
+    public static BeatmapData? ReadBeatmap(string path)
     {
         if (!File.Exists(path))
         {
@@ -19,10 +18,10 @@ class BeatUtils
     // Utility to make life easier for now
     public static void SaveBeatmap(BeatmapData bm, string saveName)
     {
-        if (!Directory.Exists(tempTestDir)) Directory.CreateDirectory(tempTestDir);
+        if (!Directory.Exists(Constants.APPLICATION_DATA)) Directory.CreateDirectory(Constants.APPLICATION_DATA);
 
-        FileStream f = File.Open(Path.Join(tempTestDir, saveName), FileMode.OpenOrCreate);
+        FileStream f = File.Open(Path.Join(Constants.APPLICATION_DATA, saveName), FileMode.OpenOrCreate);
         f.Close();
-        File.WriteAllText(Path.Join(tempTestDir, saveName), JsonUtility.ToJson(bm));
+        File.WriteAllText(Path.Join(Constants.APPLICATION_DATA, saveName), JsonUtility.ToJson(bm));
     }
 }
