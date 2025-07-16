@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
-
+[Serializable]
 public class BeatmapData
 {
-    public Guid identifier = Guid.NewGuid();
+    public string identifier;
     public float speed;
     public float offsetMs;
     public List<BeatData> beats;

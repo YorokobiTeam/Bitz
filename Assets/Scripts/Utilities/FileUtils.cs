@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using System.Windows.Forms;
+using UnityEngine;
 
 
 static class FileUtils
@@ -18,7 +15,9 @@ static class FileUtils
 
         if (fileDialog.ShowDialog() == DialogResult.OK)
         {
+            Debug.Log(fileDialog.FileName);
             return fileDialog.FileName;
+
         }
         return null;
     }

@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c494278b26d74344d9ace9ce9244b507, type: 3}
   m_Name: MapMetadataObject
   m_EditorClassIdentifier: 
-  mapID: 1231
-  mapTitle: The intense voice of Hatsune Miku
-  musicAuthor: DECO*27
-  mapAuthor: DenKatsuMaps
-  currentPoints: 99999999
+  mapData:
+    identifier: 
+    speed: 0
+    offsetMs: 0
+    beats: []
+    songTitle: I wish I could Fall
+    songAuthor: Jamie Paige
+    mapAuthor: Yay fuck inline values?!
+  currentPoints: 00000099
   coverArtwork: {fileID: -418015014367539744, guid: 8409ee6f674a7b3409ec4164d78bcd3d, type: 3}
-  isOffline: 1
+  backgroundArtwork: {fileID: 0}
+  music: {fileID: 0}

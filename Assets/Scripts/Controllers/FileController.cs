@@ -11,71 +11,61 @@ public class FileController : MonoBehaviour
     public GameData gameData;
     private OpenFileDialog fileDialog;
 
+    public static void LoadNewBitzmap(IProgress<string>? progressCallback)
+    {
+        Debug.Log(progressCallback);
+        LoadNewBitzmap(FileUtils.OpenFilePicker(), progressCallback);
+    }
+
     /// <summary>
     /// This function opens the bitzmap, reads and verify the content, then overrides the folder with bitzmap's data.
     /// </summary>
     /// <param name="path">Path of the .bitzmap file</param>
     /// <param name="progressCallback">Progress callback messages</param>
-    public static async void LoadNewBitzmap(string path, IProgress<string>? progressCallback)
+    public static void LoadNewBitzmap(string path, IProgress<string>? progressCallback)
     {
-        await Task.Run(() =>
+        var tempFolder = Path.Join(Constants.APPLICATION_DATA, "temp");
+        try
         {
-            try
-            {
-                var tempFolder = Path.Join(Constants.APPLICATION_DATA, "temp");
-                if (!Directory.Exists(tempFolder)) Directory.CreateDirectory(tempFolder);
+            if (!Directory.Exists(tempFolder)) Directory.CreateDirectory(tempFolder);
 
-                progressCallback?.Report("Extracting Bitzmap...");
-                System.IO.Compression.ZipFile.ExtractToDirectory(path, tempFolder);
+            Debug.Log("Extracting Bitzmap...");
+            System.IO.Compression.ZipFile.ExtractToDirectory(path, tempFolder);
 
-                progressCallback?.Report("Verifying content...");
-                var scanResult = VerifyBitzMapDirectoryStructure(tempFolder);
-              
-                if (!scanResult.isValid) throw new Exception();
+            Debug.Log("Verifying content...");
+            var scanResult = VerifyBitzMapDirectoryStructure(tempFolder);
 
-                var mapFolder = Path.Join(Constants.APPLICATION_DATA, scanResult.mapData.identifier.ToString());
-                if (Directory.Exists(mapFolder))
-                {
-                    progressCallback?.Report("Deleting previous folder...");
-                    Directory.Delete(mapFolder, true);
-                    Directory.CreateDirectory(mapFolder);
-                }
-                progressCallback?.Report("Moving files...");
-                // Lets just move all the files im too lazy to type it all out...
-                foreach (string fileName in Directory.GetFiles(tempFolder))
-                {
-                    File.Move(Path.Join(tempFolder, fileName), Path.Join(mapFolder, fileName));
-                }
-                progressCallback?.Report("Done!");
-                return;
-            }
-            catch (SecurityException)
+            if (!scanResult.isValid) throw new Exception();
+
+            var mapFolder = Path.Join(Constants.APPLICATION_DATA, scanResult.mapData.identifier.ToString());
+            if (Directory.Exists(mapFolder))
             {
-                progressCallback?.Report("Bitz does not have access to specified file");
+                Debug.Log("Deleting previous folder...");
+                Directory.Delete(mapFolder, true);
             }
-            catch (FileNotFoundException)
+            Directory.CreateDirectory(mapFolder);
+            Debug.Log("Moving files...");
+            // Lets just move all the files im too lazy to type it all out...
+            foreach (string fileName in Directory.GetFiles(tempFolder))
             {
-                progressCallback?.Report("File was not found on local drive.");
+                File.Move(fileName, Path.Join(mapFolder, Path.GetFileName(fileName)));
             }
-            catch (IOException)
-            {
-                progressCallback?.Report("Bitz can't read specified files. Please try again later.");
-            }
-            catch (Exception)
-            {
-                progressCallback?.Report("Invalid Bitz Map file selected, please try again!");
-            }
-        });
+            Debug.Log("Done!");
+            return;
+        }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            Directory.Delete(tempFolder, true);
+        }
+
 
     }
 
 
-
-
-    public void LoadPreviousBeatmaps()
-    {
-
-    }
 
     public static DirectoryScanResult VerifyBitzMapDirectoryStructure(string directory)
     {
@@ -86,7 +76,7 @@ public class FileController : MonoBehaviour
             backgroundImage = false,
             albumCoverImage = false
         };
-        if (!dirFiles.Contains(Constants.FILENAME_MUSIC) || !dirFiles.Contains(Constants.FILENAME_MAP))
+        if (!dirFiles.Contains(Path.Join(directory, Constants.FILENAME_MUSIC)) || !dirFiles.Contains(Path.Join(directory, Constants.FILENAME_MAP)))
         {
             directoryScanResult.isValid = false;
             return directoryScanResult;
@@ -99,8 +89,8 @@ public class FileController : MonoBehaviour
         {
             directoryScanResult.isValid = false;
         }
-        if (dirFiles.Contains(Constants.FILENAME_BACKGROUND)) directoryScanResult.backgroundImage = true;
-        if (dirFiles.Contains(Constants.FILENAME_ALBUM_COVER)) directoryScanResult.albumCoverImage = true;
+        if (dirFiles.Contains(Path.Join(directory, Constants.FILENAME_BACKGROUND))) directoryScanResult.backgroundImage = true;
+        if (dirFiles.Contains(Path.Join(directory, Constants.FILENAME_ALBUM_COVER))) directoryScanResult.albumCoverImage = true;
 
         return directoryScanResult;
     }

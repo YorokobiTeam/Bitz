@@ -19,7 +19,7 @@ public class MainMenuController : MonoBehaviour
     private int leftPanelCurrentIndex = 0;
     private int rightPanelCurrentIndex = 0;
     private bool isLeft = true;
-
+    private Button openFileButton;
 
 
 
@@ -39,10 +39,24 @@ public class MainMenuController : MonoBehaviour
         buttons.AddRange(menuPanelRoot.Children());
         maps.AddRange(rightPanelRoot.Children());
 
+        this.openFileButton = menuPanelRoot.Q<Button>("OpenMap");
+        openFileButton.clicked += OpenFileButton_clicked;
+
         ui.rootVisualElement.RegisterCallback<NavigationMoveEvent>(HandleNavigation);
+
         RelinkClasses();
 
     }
+
+    private void OpenFileButton_clicked()
+    {
+        IProgress<string> progressReporter = new Progress<string>(callback =>
+        {
+            Debug.Log(callback);
+        });
+        FileController.LoadNewBitzmap(progressReporter);
+    }
+
 
     private void HandleNavigation(NavigationMoveEvent e)
     {
