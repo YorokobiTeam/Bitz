@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157e8f75894d5ab40be8f834a3c8e9f2, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
+  beatmapData:
+    identifier: 
+    speed: 0
+    offsetMs: 0
+    beats: []
+    songTitle: 
+    songAuthor: 
+    mapAuthor: 
   gameState: 3
   score: 0
   isPaused: 0
@@ -19,10 +27,10 @@ MonoBehaviour:
   scoreRankA: 1000
   scoreRankB: 500
   timeScale: 1000
-  beatMapFileDir: C:\Users\ASUS\Downloads\Freaky_Undulation.json
-  musicFileDir: C:\Users\ASUS\Downloads\Freaky.mp3
-  backgroundImageDir: C:\Users\ASUS\Desktop\mpv-shot0018.jpg
-  albumCoverImageDir: C:\Users\ASUS\Pictures\Picture1.png
+  beatMapFileDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_restricted.json"'
+  musicFileDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_restricted.mp3"'
+  backgroundImageDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_bg.jpg"'
+  albumCoverImageDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_cover.jpg"'
   epicHitCount: 0
   coolHitCount: 0
   niceHitCount: 0

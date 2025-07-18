@@ -1,16 +1,29 @@
 using UnityEngine;
-
-public class NewMonoBehaviourScript : MonoBehaviour
+using System.Collections.Generic;
+public class MapDataLoader : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static List<BitzSongData> listSongData;
+    public static BitzSongData PopulateSOs(
+        BeatmapData mapData,
+        AudioClip songData,
+        Texture2D? backgroundImage,
+        Texture2D? albumCover
+        )
     {
-        
+        if (mapData == null || songData == null) return null;
+        BitzSongData newData = ScriptableObject.CreateInstance<BitzSongData>();
+        newData.beatmaps = mapData;
+        newData.musicFile = songData;
+        newData.backgroundImage = backgroundImage;
+        newData.albumCoverImage = albumCover;
+        return newData;
     }
-
-    // Update is called once per frame
-    void Update()
+    public static void AddToSOList(BitzSongData xongData)
     {
-        
+        listSongData.Add(xongData);
+    }
+    public void Start()
+    {
+        listSongData = new List<BitzSongData>();
     }
 }
