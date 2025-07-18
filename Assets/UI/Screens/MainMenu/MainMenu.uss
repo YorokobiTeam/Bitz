@@ -132,3 +132,19 @@
 .menu-dist-4 {
     scale: 0.85 0.85;
 }
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+}
+
+.bounce {
+    animation-name: bounce;
+    animation-duration: 0.6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
