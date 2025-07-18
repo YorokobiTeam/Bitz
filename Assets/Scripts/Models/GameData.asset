@@ -15,16 +15,6 @@ MonoBehaviour:
   gameState: 0
   score: 0
   isPaused: 0
-<<<<<<< Updated upstream
-  scoreRankS: 2000
-  scoreRankA: 1000
-  scoreRankB: 500
-  timeScale: 100
-  beatMapFileDir: C:\Users\maik\AppData\Roaming\Bitz\test.json
-  musicFileDir: C:\Users\maik\AppData\Roaming\Bitz\MASTERPIECE.mp3
-  backgroundImageDir: C:\Users\maik\AppData\Roaming\Bitz\Freaky_Undulations_7E_jacket.webp
-  albumCoverImageDir: C:\Users\maik\AppData\Roaming\Bitz\album_cover.jpg
-=======
   rankS: 2000
   rankA: 1000
   rankB: 500
@@ -32,13 +22,7 @@ MonoBehaviour:
   musicFileDir: E:\Media\song\holywatr - fade.mp3
   backgroundImageDir: "E:\\Media\\n\u1ECD nem.jpg"
   albumCoverImageDir: E:\Media\libra.jpg
->>>>>>> Stashed changes
   epicHitCount: 0
   coolHitCount: 0
   niceHitCount: 0
   missedHitCount: 0
-<<<<<<< Updated upstream
-  albumCoverSprite: {fileID: 0}
-  backgroundSprite: {fileID: 0}
-=======
->>>>>>> Stashed changes
