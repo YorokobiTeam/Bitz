@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ public class FileController : MonoBehaviour
 {
     public GameData gameData;
     private OpenFileDialog fileDialog;
+
 
     public static void LoadNewBitzmap(IProgress<string>? progressCallback)
     {
@@ -98,8 +100,38 @@ public class FileController : MonoBehaviour
 
     public void Start()
     {
-
+        Debug.Log("FileController started, setting up game files");
+        
     }
+    public static void UnzipAllMaps(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            Debug.LogError($"Directory {path} does not exist.");
+            return;
+        }
+        DirectoryInfo dirInfo = new DirectoryInfo(path);
+        var fileInfo = dirInfo.GetFiles();
+        foreach (var file in fileInfo)
+        {
+            if (file.Extension != ".bitzmap")
+            {
+                Debug.LogWarning($"File {file.Name} is not a .bitzmap file, skipping.");
+                continue;
+            }
+            try
+            {
+                LoadNewBitzmap(file.FullName, null);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load bitzmap {file.Name}: {ex.Message}");
+
+            }
+        }
+    }
+
+    
 }
 
 public struct DirectoryScanResult
@@ -109,3 +141,4 @@ public struct DirectoryScanResult
     public bool albumCoverImage;
     public BeatmapData mapData;
 }
+
