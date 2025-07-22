@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Mono.Cecil.Cil;
+using Unity.VisualScripting;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// This class manages IO and file related operations in Bitz.
@@ -26,6 +28,7 @@ public class BitzFileService : GenericSupabaseService
 
     // You can't instantiate this.
     private BitzFileService() { }
+
 #nullable enable
     public async Task<StorageObjectMetadata?> GetObjectMetadata(string objectId)
     {
@@ -51,7 +54,7 @@ public class BitzFileService : GenericSupabaseService
         var dir = Path.Join(Constants.APPLICATION_DATA, relativeDir);
         var path = Path.Join(
             dir,
-            $"{@object.ObjectId}.{Utilities.GetExtension(@object.Metadata.ServerFilePath)}"
+            $"{@object.ObjectId}.{FileUtils.GetExtension(@object.Metadata.ServerFilePath)}"
         );
         if (!Directory.Exists(dir))
         {
@@ -107,11 +110,11 @@ public class BitzFileService : GenericSupabaseService
                 );
 
             // Recalculate Hash
-            var localMD5 = Utilities.GetFileMD5(
+            var localMD5 = FileUtils.GetFileMD5(
                 Path.Join(
                     Constants.APPLICATION_DATA,
                     localMetadata.RelativeLocalDirectory,
-                    $"{serverMetadata.Id}.{Utilities.GetExtension(serverMetadata.ServerFilePath)}"
+                    $"{serverMetadata.Id}.{FileUtils.GetExtension(serverMetadata.ServerFilePath)}"
                 )
             );
 
@@ -121,7 +124,7 @@ public class BitzFileService : GenericSupabaseService
                 var filePath = Path.Join(
                     Constants.APPLICATION_DATA,
                     localMetadata.RelativeLocalDirectory,
-                    $"{serverMetadata.Id}.{Utilities.GetExtension(Path.GetFileName(serverMetadata.ServerFilePath))}"
+                    $"{serverMetadata.Id}.{FileUtils.GetExtension(Path.GetFileName(serverMetadata.ServerFilePath))}"
                 );
                 // Checks if file actually exists or not
                 if (!File.Exists(filePath))
@@ -181,7 +184,7 @@ public class BitzFileService : GenericSupabaseService
     /// Retrieves a <see cref="StorageObject"/> by its ID, optionally downloading it from storage if not found in the local cache.
     /// </summary>
     /// <param name="objectId">The unique identifier of the object to retrieve.</param>
-    /// <param name="relativeLocalDir">
+    /// <param name="relativeLocalCacheDir">
     /// The relative directory where the object should be downloaded to. Defaults to <c>"/cache/files"</c>.
     /// </param>
     /// <param name="bucket">
@@ -200,7 +203,7 @@ public class BitzFileService : GenericSupabaseService
     /// </remarks>
     public async Task<StorageObject?> GetStorageObject(
         string objectId,
-        string relativeLocalDir = "/cache/files",
+        string relativeLocalCacheDir = "/cache/files",
         string bucket = "bitz-files",
         IProgress<float>? progressCb = null
     )
@@ -211,7 +214,7 @@ public class BitzFileService : GenericSupabaseService
         try
         {
             var @object = new StorageObject(objectId) { Bucket = bucket };
-            await DownloadObject(@object, relativeLocalDir, progressCb);
+            await DownloadObject(@object, relativeLocalCacheDir, progressCb);
             return @object;
         }
         catch (Exception e)
@@ -221,13 +224,18 @@ public class BitzFileService : GenericSupabaseService
         }
     }
 
+    public async void GetStorageObject(StorageObject @object, string bucket = "bitz-files", Action<int> progressCb = null)
+    {
+        StorageObject? fromCache 
+    }
+
     public void DeleteLocalStorageObject(StorageObject @object)
     {
         File.Delete(Path.Join(Constants.CACHE_METADATA, $"{@object.ObjectId}.bmeta"));
         File.Delete(
             Path.Join(
                 Constants.CACHE_FILES,
-                $"{@object.ObjectId}.{Utilities.GetExtension(@object.Metadata.ServerFilePath)}"
+                $"{@object.ObjectId}.{FileUtils.GetExtension(@object.Metadata.ServerFilePath)}"
             )
         );
     }
@@ -261,5 +269,36 @@ public class BitzFileService : GenericSupabaseService
                 true
             );
     }
+
+    public async Task<StorageObject> UploadStorageObject(
+        string localPath,
+        string? remotePath,
+        string bucket = "bitz-files",
+        bool enableCache = false,
+        string relativeCacheDir = "/cache/files"
+    )
+    {
+        if (!File.Exists(localPath))
+        {
+            throw new FileNotFoundException("The file to be uploaded could not be found");
+        }
+        byte[] data = await File.ReadAllBytesAsync(localPath);
+        var storageObjectId = await supabase
+            .Storage.From(bucket)
+            .Upload(data, remotePath ?? localPath);
+        StorageObject newSO = new(storageObjectId);
+
+        if (enableCache)
+        {
+            var cachePath = Path.Join(Constants.APPLICATION_DATA, relativeCacheDir);
+            File.Copy(
+                localPath,
+                Path.Join(cachePath, $"{newSO.ObjectId}.{FileUtils.GetExtension(localPath)}")
+            );
+            newSO.localPath = cachePath;
+        }
+        return newSO;
+    }
+
 #nullable disable
 }

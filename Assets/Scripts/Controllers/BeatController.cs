@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 
 public class BeatController : MonoBehaviour
 {
-
     public BeatPrefab beatPrefab;
     public BeatmapData mapData;
     private readonly Queue<BeatPrefab> activeBeatObjects = new();
@@ -18,10 +17,16 @@ public class BeatController : MonoBehaviour
     {
         foreach (BeatData beatData in mapData.beats)
         {
-            var beatObj = Instantiate(beatPrefab,
-                hitboxObject.transform.position + new Vector3(mapData.offsetMs * mapData.speed + (mapData.speed / gameData.timeScale) * beatData.start, 0)
-                , Quaternion.identity
-                                );
+            var beatObj = Instantiate(
+                beatPrefab,
+                hitboxObject.transform.position
+                    + new Vector3(
+                        mapData.offsetMs * mapData.speed
+                            + (mapData.speed / gameData.timeScale) * beatData.start,
+                        0
+                    ),
+                Quaternion.identity
+            );
             var rb = beatObj.rb;
             rb.linearDamping = 0f;
             rb.angularDamping = 0f;
@@ -35,7 +40,6 @@ public class BeatController : MonoBehaviour
         OnFinishSpawningBeats?.Invoke();
     }
 
-
     public event NotifyFinishLoadingBeats OnFinishSpawningBeats;
 
     private void LoadBeatmapData()
@@ -43,41 +47,49 @@ public class BeatController : MonoBehaviour
         this.mapData = BeatUtils.ReadBeatmap(gameData.beatMapFileDir);
         this.gameData.beatmapData = mapData;
     }
+
     public void StartBeats()
     {
         foreach (BeatPrefab beat in this.activeBeatObjects)
         {
-
             beat.rb.linearVelocityX = -gameData.beatmapData.speed;
         }
     }
 
     public void SetHitboxOrientation()
     {
-        this.hitboxObject.transform.eulerAngles = new Vector3(0, 0, this.activeBeatObjects.Peek().data.beatDirection switch
-        {
-            BeatDirection.Up => 90f,
-            BeatDirection.Down => -90f,
-            BeatDirection.Left => 180f,
-            BeatDirection.Right => 0f,
-            _ => 0
-        });
+        this.hitboxObject.transform.eulerAngles = new Vector3(
+            0,
+            0,
+            this.activeBeatObjects.Peek().data.beatDirection switch
+            {
+                BeatDirection.Up => 90f,
+                BeatDirection.Down => -90f,
+                BeatDirection.Left => 180f,
+                BeatDirection.Right => 0f,
+                _ => 0,
+            }
+        );
     }
 
     public void PauseBeats()
     {
         foreach (BeatPrefab beat in this.activeBeatObjects)
         {
-
             beat.rb.linearVelocityX = 0;
         }
     }
 
     public void DestroyBeat(BeatPrefab beat, DestructionReason reason)
     {
-        if (beat == null) return;
-        if (reason is DestructionReason.OutOfBounds) this.NotifyBeatHit(HitResult.Missed, -1f);
-        beat.AnimateOut(beat.transform.position, this.pointsBox.transform.position + new Vector3(0, 0, 1));
+        if (beat == null)
+            return;
+        if (reason is DestructionReason.OutOfBounds)
+            this.NotifyBeatHit(HitResult.Missed, -1f);
+        beat.AnimateOut(
+            beat.transform.position,
+            this.pointsBox.transform.position + new Vector3(0, 0, 1)
+        );
     }
 
     public event NotifyBeatHit OnNotifyBeatHit;
@@ -88,10 +100,8 @@ public class BeatController : MonoBehaviour
         SetHitboxOrientation();
     }
 
-
     public void TryHit(InputAction.CallbackContext callback)
     {
-
         var beat = this.activeBeatObjects.Peek();
         var inputDirection = callback.ReadValue<Vector2>();
 
@@ -101,10 +111,14 @@ public class BeatController : MonoBehaviour
         if (hitResult != HitResult.Ignored)
         {
             BeatDirection? beatDirection = null;
-            if (inputDirection.x > 0) beatDirection = BeatDirection.Right;
-            if (inputDirection.x < 0) beatDirection = BeatDirection.Left;
-            if (inputDirection.y > 0) beatDirection = BeatDirection.Up;
-            if (inputDirection.y < 0) beatDirection = BeatDirection.Down;
+            if (inputDirection.x > 0)
+                beatDirection = BeatDirection.Right;
+            if (inputDirection.x < 0)
+                beatDirection = BeatDirection.Left;
+            if (inputDirection.y > 0)
+                beatDirection = BeatDirection.Up;
+            if (inputDirection.y < 0)
+                beatDirection = BeatDirection.Down;
             Debug.Log(inputDirection);
             Debug.Log(beat.data.beatDirection);
             if (beatDirection is null || !(beatDirection == (beat.data.beatDirection)))
@@ -115,7 +129,6 @@ public class BeatController : MonoBehaviour
         }
 
         this.NotifyBeatHit(hitResult, diff);
-
     }
 
     public HitResult GetHitResult(float diff, float dist)
@@ -144,7 +157,6 @@ public class BeatController : MonoBehaviour
         }
     }
 
-
     public void Start()
     {
         LoadBeatmapData();
@@ -168,8 +180,8 @@ public class BeatController : MonoBehaviour
                 }
             }
 
-            if (xFoq - xHitbox < 0 && (xHitbox - xFoq < this.gameData.hitRegisterThreshold.Item1)) this.MissBeat();
-
+            if (xFoq - xHitbox < 0 && (xHitbox - xFoq < this.gameData.hitRegisterThreshold.Item1))
+                this.MissBeat();
         }
     }
 
@@ -177,12 +189,17 @@ public class BeatController : MonoBehaviour
     {
         if (this.activeBeatObjects.Peek() != null)
         {
-            NotifyBeatHit(HitResult.Missed, Mathf.Abs(this.activeBeatObjects.Peek().transform.position.x - this.hitboxObject.transform.position.x));
+            NotifyBeatHit(
+                HitResult.Missed,
+                Mathf.Abs(
+                    this.activeBeatObjects.Peek().transform.position.x
+                        - this.hitboxObject.transform.position.x
+                )
+            );
             this.activeBeatObjects.Dequeue();
         }
-
     }
-
 }
+
 public delegate void NotifyFinishLoadingBeats();
 public delegate void NotifyBeatHit(HitResult hitResult, float distanceDiff);

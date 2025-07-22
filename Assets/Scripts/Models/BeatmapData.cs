@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-
 
 public class BeatmapData
 {
@@ -13,5 +10,4 @@ public class BeatmapData
     public string songAuthor;
 
     public string mapAuthor;
-
 }

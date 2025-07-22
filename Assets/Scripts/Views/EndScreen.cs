@@ -8,20 +8,41 @@ public class EndScreenAnimator : MonoBehaviour
 {
     public GameData gameData;
 
+    [SerializeField]
+    Sprite rankingTextS,
+        rankingTextA,
+        rankingTextB,
+        rankingTextF,
+        rankingS,
+        rankingA,
+        rankingB,
+        rankingF;
 
     [SerializeField]
-    Sprite rankingTextS, rankingTextA, rankingTextB, rankingTextF, rankingS, rankingA, rankingB, rankingF;
-
+    Image albumCover,
+        resultRanking,
+        resultRankingText,
+        resultStrip,
+        resultBox,
+        scoreBox,
+        statsBox,
+        rankingBg,
+        background;
 
     [SerializeField]
-    Image albumCover, resultRanking, resultRankingText, resultStrip, resultBox, scoreBox, statsBox, rankingBg, background;
+    TMP_Text score,
+        countEpic,
+        countCool,
+        countNice,
+        countMissed,
+        statusText,
+        songName,
+        songAuthor,
+        mapAuthor;
 
     [SerializeField]
-    TMP_Text score, countEpic, countCool, countNice, countMissed, statusText, songName, songAuthor, mapAuthor;
-
-    [SerializeField]
-    GameObject songAuthorBox, mapAuthorBox;
-
+    GameObject songAuthorBox,
+        mapAuthorBox;
 
     public void OnEnable()
     {
@@ -62,12 +83,14 @@ public class EndScreenAnimator : MonoBehaviour
         LeanTween.scale(songAuthorRect, Vector3.one, 1f).setEaseOutBounce().setDelay(0.8f);
         LeanTween.scale(mapAuthorRect, Vector3.one, 1f).setEaseOutBounce().setDelay(0.8f);
 
-
-
         LeanTween.moveLocalY(stripRect.gameObject, 0f, 0.5f).setEaseOutCubic().setDelay(1.5f);
 
         LeanTween.scale(boxRect, Vector3.one, 0.4f).setEaseOutBack().setDelay(2.0f);
-        LeanTween.rotateAround(rankingRect, Vector3.forward, -360, 10f).setEaseInOutCubic().setLoopClamp().setDelay(2.5f);
+        LeanTween
+            .rotateAround(rankingRect, Vector3.forward, -360, 10f)
+            .setEaseInOutCubic()
+            .setLoopClamp()
+            .setDelay(2.5f);
 
         LeanTween.scale(rankRect, Vector3.one, 0.4f).setEaseOutBack().setDelay(2.3f);
         LeanTween.scale(rankTextRect, Vector3.one, 0.4f).setEaseOutBack().setDelay(2.6f);
@@ -83,6 +106,7 @@ public class EndScreenAnimator : MonoBehaviour
             case GameResult.F:
                 this.resultRanking.sprite = this.rankingF;
                 this.resultRankingText.sprite = this.rankingTextF;
+                statusText.text = "FAILED";
                 break;
             case GameResult.A:
                 this.resultRanking.sprite = this.rankingA;
@@ -113,17 +137,20 @@ public class EndScreenAnimator : MonoBehaviour
 
     private GameResult getResult()
     {
-        if (this.gameData.score < gameData.scoreRankB) return GameResult.F;
-        if (this.gameData.score >= gameData.scoreRankB && this.gameData.score < gameData.scoreRankA) return GameResult.B;
-        if (this.gameData.score >= gameData.scoreRankA && this.gameData.score < gameData.scoreRankS) return GameResult.A;
+        if (this.gameData.score < gameData.scoreRankB)
+            return GameResult.F;
+        if (this.gameData.score >= gameData.scoreRankB && this.gameData.score < gameData.scoreRankA)
+            return GameResult.B;
+        if (this.gameData.score >= gameData.scoreRankA && this.gameData.score < gameData.scoreRankS)
+            return GameResult.A;
         return GameResult.S;
-
     }
+
     enum GameResult
     {
         S,
         A,
         B,
-        F
+        F,
     }
 }

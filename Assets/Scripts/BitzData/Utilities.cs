@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-public class Utilities
+public class FileUtils
 {
     public static string GetExtension(string fileName)
     {
@@ -12,7 +12,7 @@ public class Utilities
             return "";
         return strings.Last<string>();
     }
-
+    
     public static string ExtractFileNameFromSupabasePath(string filePath)
     {
         string[] strings = filePath.Split("/");

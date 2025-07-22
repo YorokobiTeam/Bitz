@@ -1,7 +1,9 @@
 ﻿using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
+using System;
 
-[Table("player_info")]
-class BitzPlayerInfo
+[Table("player_info"), Serializable]
+public class BitzPlayerInfo : BaseModel
 {
     [PrimaryKey("player_id")]
     public string Id { get; set; }
