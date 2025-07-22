@@ -8,11 +8,16 @@ using UnityEngine.UIElements;
 
 public class MainMenuController : MonoBehaviour
 {
+    [SerializeField]
+    VisualTreeAsset mapCard;
+    [SerializeField]
+    StyleSheet mapCardStylesheet;
+
     private VisualElement menuPanelRoot;
     private VisualElement rightPanelRoot;
+    private List<VisualElement> buttons = new();
+    private List<VisualElement> maps = new();
     private VisualElement logo;
-    private List<VisualElement> buttons = new List<VisualElement>();
-    private List<VisualElement> maps = new List<VisualElement>();
 
     private Label recentPlaysTitle;
     private UIDocument ui;
@@ -20,7 +25,11 @@ public class MainMenuController : MonoBehaviour
     private int leftPanelCurrentIndex = 0;
     private int rightPanelCurrentIndex = 0;
     private bool isLeft = true;
+    private Button openFileButton;
+    private List<MapMetadataObject> mapMetadataObjects;
 
+    [SerializeField]
+    AudioImporter audioImporter;
     [SerializeField] AudioClip move;
     private AudioSource audioSource;
     [SerializeField] AudioClip backgroundMusic;
@@ -33,6 +42,8 @@ public class MainMenuController : MonoBehaviour
 	public void Start()
     {
         ui = GetComponent<UIDocument>();
+
+        menuPanelRoot = ui.rootVisualElement.Q<VisualElement>("MenuPanel");
         audioSource = GetComponent<AudioSource>();
         bm = GetComponent<AudioSource>();
         bm.PlayOneShot(backgroundMusic);	
@@ -49,13 +60,55 @@ public class MainMenuController : MonoBehaviour
 
 
         buttons.AddRange(menuPanelRoot.Children());
-        maps.AddRange(rightPanelRoot.Children());
+
+        this.openFileButton = menuPanelRoot.Q<Button>("OpenMap");
+        openFileButton.clicked += OpenFileButton_clicked;
 
         ui.rootVisualElement.RegisterCallback<NavigationMoveEvent>(HandleNavigation);
-		RelinkClasses();
+        ReloadMaps();
+        RelinkClasses();
+
+
+
 
 		AnimateLogoBounceToMusic();
 	}
+
+    public async void PlayMap(MapMetadataObject map)
+    {
+
+    }
+
+    public async void ReloadMaps()
+    {
+
+        this.mapMetadataObjects = await FileUtils.LoadAllMaps(Constants.APPLICATION_DATA, this.audioImporter);
+
+        rightPanelRoot.Clear();
+        foreach (var obj in mapMetadataObjects)
+        {
+            Debug.Log("boo");
+            var ve = mapCard.Instantiate().Q<VisualElement>("Root");
+            ve.styleSheets.Add(mapCardStylesheet);
+            ve.style.flexGrow = 0;
+            ve.dataSource = obj;
+            ve.name = "MapCard";
+            rightPanelRoot.Add(ve);
+        }
+        maps.AddRange(rightPanelRoot.Children());
+
+
+    }
+
+    private void OpenFileButton_clicked()
+    {
+        IProgress<string> progressReporter = new Progress<string>(callback =>
+        {
+            Debug.Log(callback);
+        });
+        FileUtils.AddNewBitzmap(this.audioImporter, progressReporter);
+    }
+
 
     private void HandleNavigation(NavigationMoveEvent e)
     {
@@ -87,7 +140,8 @@ public class MainMenuController : MonoBehaviour
                 shouldPlaySound = true;
 				
                 break;
-        };
+        }
+        ;
 
         if (shouldPlaySound == true)
         {

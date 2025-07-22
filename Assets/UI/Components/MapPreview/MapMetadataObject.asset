@@ -12,10 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c494278b26d74344d9ace9ce9244b507, type: 3}
   m_Name: MapMetadataObject
   m_EditorClassIdentifier: 
-  mapID: 1231
-  mapTitle: The intense voice of Hatsune Miku
-  musicAuthor: DECO*27
-  mapAuthor: DenKatsuMaps
-  currentPoints: 99999999
-  coverArtwork: {fileID: -418015014367539744, guid: 8409ee6f674a7b3409ec4164d78bcd3d, type: 3}
-  isOffline: 1
+  mapData:
+    identifier: 
+    speed: 0
+    offsetMs: 0
+    musicFileName: 
+    backgroundFileName: 
+    albumCoverFileName: 
+    beats: []
+    songTitle: I wish I could Fall
+    songAuthor: Jamie Paige
+    mapAuthor: What
+  currentPoints: 92903129
+  coverArtwork: {fileID: 2800000, guid: 8409ee6f674a7b3409ec4164d78bcd3d, type: 3}
+  backgroundArtwork: {fileID: 2800000, guid: 8066b137edf4c0748a2cba22a5d20085, type: 3}
+  music: {fileID: 0}

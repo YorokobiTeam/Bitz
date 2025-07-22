@@ -1,17 +1,17 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/UI/Components/MapPreview/MapPreviewCard.uss?fileID=7433441132597879392&amp;guid=a6b99f2f7dc364b4bb8be7d46a168810&amp;type=3" />
-    <Style src="project://database/Assets/UI/Index.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3" />
-    <ui:VisualElement focusable="false" name="Root" data-source="project://database/Assets/UI/Components/MapPreview/MapMetadataObject.asset?fileID=11400000&amp;guid=2d3a70d0eea2b5f4786736312b881c62&amp;type=2#MapMetadataObject" style="flex-grow: 1; background-color: rgb(0, 0, 0); flex-direction: row; -unity-font-definition: url(&quot;project://database/Assets/Fonts/HelveticaCompressed.otf?fileID=12800000&amp;guid=3d6e81cc80a1cad43a72f30d12ef93ca&amp;type=3#HelveticaCompressed&quot;);">
+    <Style src="project://database/Assets/UI/Components/MapPreview/MapPreviewCard.uss?fileID=7433441132597879392&amp;guid=a6b99f2f7dc364b4bb8be7d46a168810&amp;type=3#MapPreviewCard" />
+    <Style src="project://database/Assets/UI/Index.uss?fileID=7433441132597879392&amp;guid=b3b9f8e697275034f8e471d368eefa2b&amp;type=3#Index" />
+    <ui:VisualElement focusable="false" name="Root" data-source="project://database/Assets/UI/Components/MapPreview/MapMetadataObject.asset?fileID=11400000&amp;guid=2d3a70d0eea2b5f4786736312b881c62&amp;type=2#MapMetadataObject" data-source-type="MapMetadataObject, Assembly-CSharp" style="flex-grow: 1; background-color: rgb(0, 0, 0); flex-direction: row; -unity-font-definition: url(&quot;project://database/Assets/Fonts/HelveticaCompressed.otf?fileID=12800000&amp;guid=3d6e81cc80a1cad43a72f30d12ef93ca&amp;type=3#HelveticaCompressed&quot;);">
         <ui:VisualElement data-source-path="coverArtwork" style="flex-grow: 1; background-size: 75% 75%; background-position-x: center 0; -unity-background-scale-mode: scale-and-crop; max-width: 100px; min-width: 100px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
             <Bindings>
                 <ui:DataBinding property="style.backgroundImage" binding-mode="ToTarget" />
             </Bindings>
         </ui:VisualElement>
         <ui:VisualElement enabled="true" style="flex-grow: 1; width: 100%; padding-left: 10px; padding-top: 2px; padding-bottom: 2px; padding-right: 10px;">
-            <ui:VisualElement data-source-path="mapTitle" class="h-one-half aictr text-4xl" style="flex-grow: 1;">
+            <ui:VisualElement class="h-one-half aictr text-4xl" style="flex-grow: 1;">
                 <ui:Label class="card-title" style="-unity-text-align: middle-left; color: rgb(255, 199, 31); font-size: 40px;">
                     <Bindings>
-                        <ui:DataBinding property="text" binding-mode="ToTarget" />
+                        <ui:DataBinding property="text" binding-mode="ToTarget" data-source-path="mapData.songTitle" />
                     </Bindings>
                 </ui:Label>
             </ui:VisualElement>
@@ -20,10 +20,10 @@
                     <ui:VisualElement class="text-lg">
                         <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
                             <ui:VisualElement class="supp-icon" />
-                            <ui:VisualElement data-source-path="musicAuthor" class="w-five-sixths name-container" style="flex-grow: 1; justify-content: center;">
-                                <ui:Label text="CosMo, GAiA" style="-unity-text-align: lower-left; width: 100%;">
+                            <ui:VisualElement class="w-five-sixths name-container" style="flex-grow: 1; justify-content: center;">
+                                <ui:Label style="-unity-text-align: lower-left; width: 100%; color: rgb(255, 255, 255);">
                                     <Bindings>
-                                        <ui:DataBinding property="text" binding-mode="ToTarget" />
+                                        <ui:DataBinding property="text" binding-mode="ToTarget" data-source-path="mapData.songAuthor" />
                                     </Bindings>
                                 </ui:Label>
                             </ui:VisualElement>
@@ -31,9 +31,9 @@
                         <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
                             <ui:VisualElement name="SongAuthorNameContainer" class="supp-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/MapAuthorIcon.png?fileID=2800000&amp;guid=cb45e5ea004e9ef4c8b8683c633cbbdd&amp;type=3#MapAuthorIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
                             <ui:VisualElement name="MapAuthorNameContainer" class="w-five-sixths name-container aictr">
-                                <ui:Label text="DanketsUMaps" data-source-path="mapAuthor" style="-unity-text-align: lower-left; width: 100%;">
+                                <ui:Label style="-unity-text-align: lower-left; width: 100%; color: rgb(255, 255, 255);">
                                     <Bindings>
-                                        <ui:DataBinding property="text" binding-mode="ToTarget" />
+                                        <ui:DataBinding property="text" binding-mode="ToTarget" data-source-path="mapData.mapAuthor" />
                                     </Bindings>
                                 </ui:Label>
                             </ui:VisualElement>
@@ -41,12 +41,12 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement class="w-one-half" style="flex-grow: 1; flex-direction: row; justify-content: flex-end; align-items: flex-end;">
-                    <ui:Label text="9999999" data-source-path="currentPoints" class="points">
+                    <ui:Label text="9999999" class="points">
                         <Bindings>
-                            <ui:DataBinding property="text" binding-mode="ToTarget" />
+                            <ui:DataBinding property="text" binding-mode="ToTarget" data-source-path="currentPoints" />
                         </Bindings>
                     </ui:Label>
-                    <ui:Label text="bitz" style="-unity-text-align: lower-left; -unity-text-outline-width: 0; -unity-text-outline-color: rgb(0, 0, 0);" />
+                    <ui:Label text="bitz" style="-unity-text-align: lower-left; -unity-text-outline-width: 0; -unity-text-outline-color: rgb(0, 0, 0); color: rgb(255, 255, 255);" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

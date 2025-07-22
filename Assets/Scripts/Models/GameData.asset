@@ -12,16 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157e8f75894d5ab40be8f834a3c8e9f2, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  gameState: 0
+  beatmapData:
+    identifier: 
+    speed: 0
+    offsetMs: 0
+    beats: []
+    songTitle: 
+    songAuthor: 
+    mapAuthor: 
+  gameState: 3
   score: 0
   isPaused: 0
-  rankS: 2000
-  rankA: 1000
-  rankB: 500
-  beatMapFileDir: E:\Program Files\Unity\Projects\Freaky_Undulation.json
-  musicFileDir: E:\Media\song\holywatr - fade.mp3
-  backgroundImageDir: "E:\\Media\\n\u1ECD nem.jpg"
-  albumCoverImageDir: E:\Media\libra.jpg
+  scoreRankS: 2000
+  scoreRankA: 1000
+  scoreRankB: 500
+  timeScale: 1000
+  beatMapFileDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_restricted.json"'
+  musicFileDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_restricted.mp3"'
+  backgroundImageDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_bg.jpg"'
+  albumCoverImageDir: '"D:\MusicEditor\MusicFile\Time-MKJ\Time_cover.jpg"'
   epicHitCount: 0
   coolHitCount: 0
   niceHitCount: 0
