@@ -22,7 +22,7 @@ public abstract class GenericCloudResource<T>
     public abstract void Loader(string localPath);
     public async void Hydrate()
     {
-        BitzFileService.GetInstance().GetStorageObject()
+        //BitzFileService.GetInstance().GetStorageObject()
     
     }
 

@@ -256,9 +256,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapCard: {fileID: 9197481963319205126, guid: 555729f506b4b224e99e30b2fb33b9f3, type: 3}
   mapCardStylesheet: {fileID: 7433441132597879392, guid: a6b99f2f7dc364b4bb8be7d46a168810, type: 3}
-  audioImporter: {fileID: 1382472477}
+  audioImporter: {fileID: 2137900306}
   move: {fileID: 8300000, guid: b840fbdaa8fd29a4b8cd1b07801267d2, type: 3}
   backgroundMusic: {fileID: 8300000, guid: 3bfb3e6609c7da7429a70504fe71614f, type: 3}
+  manager: {fileID: 1382472477}
 --- !u!82 &590750652
 AudioSource:
   m_ObjectHideFlags: 0
@@ -487,6 +488,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8a31cc9f332cf41b799fabdbac4f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapCard: {fileID: 0}
+  mapCardStylesheet: {fileID: 0}
+  audioImporter: {fileID: 0}
+  move: {fileID: 0}
+  backgroundMusic: {fileID: 0}
+  manager: {fileID: 0}
 --- !u!114 &774165095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,6 +811,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1382472477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137900301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ca68e29f135f146a567990c4f849ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicCrossfadeChannelX: {fileID: 2137900303}
+  musicCrossfadeChannelY: {fileID: 2137900302}
+  crossfadeDuration: 1
+  soundEffectPlayer: {fileID: 2137900305}
 --- !u!1 &2137900301
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,10 +838,9 @@ GameObject:
   - component: {fileID: 2137900304}
   - component: {fileID: 2137900303}
   - component: {fileID: 2137900302}
-  - component: {fileID: 2137900306}
   - component: {fileID: 2137900305}
-  - component: {fileID: 1382472476}
   - component: {fileID: 1382472477}
+  - component: {fileID: 2137900306}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -1133,23 +1155,12 @@ AudioSource:
     m_PostInfinity: 2
     m_RotationOrder: 4
 --- !u!114 &2137900306
---- !u!114 &1382472477
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137900301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5ca68e29f135f146a567990c4f849ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  musicCrossfadeChannelX: {fileID: 2137900303}
-  musicCrossfadeChannelY: {fileID: 2137900302}
-  crossfadeDuration: 1
-  soundEffectPlayer: {fileID: 2137900305}
-  m_GameObject: {fileID: 1382472475}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c85ca24aed0de7f4bb834c92b727d65b, type: 3}
@@ -1163,3 +1174,4 @@ SceneRoots:
   - {fileID: 918968635}
   - {fileID: 590750649}
   - {fileID: 2137900304}
+  - {fileID: 774165099}

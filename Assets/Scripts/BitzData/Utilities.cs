@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-public class FileUtils
+public class BitzFileUtils
 {
     public static string GetExtension(string fileName)
     {

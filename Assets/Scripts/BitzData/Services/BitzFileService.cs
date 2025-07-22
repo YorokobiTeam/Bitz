@@ -54,7 +54,7 @@ public class BitzFileService : GenericSupabaseService
         var dir = Path.Join(Constants.APPLICATION_DATA, relativeDir);
         var path = Path.Join(
             dir,
-            $"{@object.ObjectId}.{FileUtils.GetExtension(@object.Metadata.ServerFilePath)}"
+            $"{@object.ObjectId}.{BitzFileUtils.GetExtension(@object.Metadata.ServerFilePath)}"
         );
         if (!Directory.Exists(dir))
         {
@@ -110,11 +110,11 @@ public class BitzFileService : GenericSupabaseService
                 );
 
             // Recalculate Hash
-            var localMD5 = FileUtils.GetFileMD5(
+            var localMD5 = BitzFileUtils.GetFileMD5(
                 Path.Join(
                     Constants.APPLICATION_DATA,
                     localMetadata.RelativeLocalDirectory,
-                    $"{serverMetadata.Id}.{FileUtils.GetExtension(serverMetadata.ServerFilePath)}"
+                    $"{serverMetadata.Id}.{BitzFileUtils.GetExtension(serverMetadata.ServerFilePath)}"
                 )
             );
 
@@ -124,7 +124,7 @@ public class BitzFileService : GenericSupabaseService
                 var filePath = Path.Join(
                     Constants.APPLICATION_DATA,
                     localMetadata.RelativeLocalDirectory,
-                    $"{serverMetadata.Id}.{FileUtils.GetExtension(Path.GetFileName(serverMetadata.ServerFilePath))}"
+                    $"{serverMetadata.Id}.{BitzFileUtils.GetExtension(Path.GetFileName(serverMetadata.ServerFilePath))}"
                 );
                 // Checks if file actually exists or not
                 if (!File.Exists(filePath))
@@ -226,7 +226,6 @@ public class BitzFileService : GenericSupabaseService
 
     public async void GetStorageObject(StorageObject @object, string bucket = "bitz-files", Action<int> progressCb = null)
     {
-        StorageObject? fromCache 
     }
 
     public void DeleteLocalStorageObject(StorageObject @object)
@@ -235,7 +234,7 @@ public class BitzFileService : GenericSupabaseService
         File.Delete(
             Path.Join(
                 Constants.CACHE_FILES,
-                $"{@object.ObjectId}.{FileUtils.GetExtension(@object.Metadata.ServerFilePath)}"
+                $"{@object.ObjectId}.{BitzFileUtils.GetExtension(@object.Metadata.ServerFilePath)}"
             )
         );
     }
@@ -293,7 +292,7 @@ public class BitzFileService : GenericSupabaseService
             var cachePath = Path.Join(Constants.APPLICATION_DATA, relativeCacheDir);
             File.Copy(
                 localPath,
-                Path.Join(cachePath, $"{newSO.ObjectId}.{FileUtils.GetExtension(localPath)}")
+                Path.Join(cachePath, $"{newSO.ObjectId}.{BitzFileUtils.GetExtension(localPath)}")
             );
             newSO.localPath = cachePath;
         }
