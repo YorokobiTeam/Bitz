@@ -25,19 +25,35 @@ static class BeatUtils
         File.WriteAllText(Path.Join(Constants.APPLICATION_DATA, saveName), JsonUtility.ToJson(bm));
     }
 
-    public static BitzSongData CreateSongData(
+    public static int GetHighestScoreForID(string id)
+    {
+        string historyFile = Path.Join(Constants.APPLICATION_DATA, Constants.HISTORY_FILE);
+        if (!Directory.Exists(Constants.APPLICATION_DATA)) Directory.CreateDirectory(Constants.APPLICATION_DATA);
+        if (!File.Exists(historyFile)) File.CreateText(historyFile).Write(JsonUtility.ToJson(new PlayHistory()));
+        var history = JsonUtility.FromJson<PlayHistory>(historyFile);
+        history.attempts.Sort((x, y) =>
+        {
+            return x.score - y.score;
+        });
+        var attempt = history.attempts.Find((attempt) => attempt.mapId == id);
+
+        return attempt.score;
+    }
+
+    public static MapMetadataObject CreateMapMetadata(
     BeatmapData mapData,
-    AudioClip songData,
-    Sprite? backgroundImage,
-    Sprite? albumCover
+    AudioClip music,
+    Texture2D? background,
+    Texture2D? albumCover
     )
     {
-        if (mapData == null || songData == null) return null;
-        BitzSongData newData = ScriptableObject.CreateInstance<BitzSongData>();
-        newData.beatmaps = mapData;
-        newData.musicFile = songData;
-        newData.backgroundImage = backgroundImage;
-        newData.albumCoverImage = albumCover;
+        if (mapData == null || music == null) return null;
+        MapMetadataObject newData = ScriptableObject.CreateInstance<MapMetadataObject>();
+        newData.mapData = mapData;
+        newData.music = music;
+        newData.backgroundArtwork = background;
+        newData.coverArtwork = albumCover;
+        newData.currentPoints = "0";
         return newData;
     }
 }

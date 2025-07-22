@@ -1,9 +1,9 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -26,119 +26,97 @@ static class FileUtils
         }
         return null;
     }
-    public static void UnzipAllMaps(string path)
+    //public static void UnzipAllMaps(string path)
+    //{
+
+    //    if (!Directory.Exists(path))
+    //    {
+    //        Debug.LogError($"Directory {path} does not exist.");
+    //        return;
+    //    }
+    //    DirectoryInfo dirInfo = new DirectoryInfo(path);
+    //    var fileInfo = dirInfo.GetFiles();
+    //    foreach (var file in fileInfo)
+    //    {
+    //        if (file.Extension != ".bitzmap")
+    //        {
+    //            Debug.LogWarning($"File {file.Name} is not a .bitzmap file, skipping.");
+    //            continue;
+    //        }
+    //        try
+    //        {
+    //            AddNewBitzMap(file.FullName, null);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            Debug.LogError($"Failed to load map {file.Name}: {ex.Message}");
+
+    //        }
+    //    }
+    //}
+
+    public async static Task<List<MapMetadataObject>?> LoadAllMaps(string path, AudioImporter importer)
     {
 
         if (!Directory.Exists(path))
         {
-            Debug.LogError($"Directory {path} does not exist.");
-            return;
+            Debug.Log($"Dir not found {path}");
+            return null;
         }
-        DirectoryInfo dirInfo = new DirectoryInfo(path);
-        var fileInfo = dirInfo.GetFiles();
-        foreach (var file in fileInfo)
-        {
-            if (file.Extension != ".bitzmap")
-            {
-                Debug.LogWarning($"File {file.Name} is not a .bitzmap file, skipping.");
-                continue;
-            }
-            try
-            {
-                LoadNewBitzmap(file.FullName, null);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Failed to load bitzmap {file.Name}: {ex.Message}");
-
-            }
-        }
-    }
-    public static async void LoadAllMaps(string path)
-    {
-
-        if (!Directory.Exists(path))
-        {
-            Debug.Log($"Path not found {path}");
-            return;
-        }
-        DirectoryInfo workingDir = new DirectoryInfo(path);
-        var mapDir = workingDir.GetDirectories();
+        DirectoryInfo workingDir = new(path);
+        var mapDir = Directory.GetDirectories(path);
+        List<MapMetadataObject> availableMaps = new();
         foreach (var dir in mapDir)
         {
-            var mapFiles = dir.GetFiles();
-            foreach (var file in mapFiles)
-            {
-                try
-                {
-                    BeatmapData tempMapdata = null;
-                    AudioClip tempSong = null;
-                    Sprite tempBackground = null;
-                    Sprite tempAlbumCover = null;
-                    if (file.Extension == ".json")
-                    {
-                        Debug.Log("Found .json, loading");
-                        tempMapdata = BeatUtils.ReadBeatmap(file.FullName);
-                    }
-                    if (file.Extension == ".mp3")
-                    {
-                        Debug.Log("Found .mp3, loading");
-                        tempSong = await LoadAudio(file.FullName);
-                    }
-                    if (file.Extension == ".png" && (file.Name.ToLower().Contains("bg") || file.Name.ToLower().Contains("background")))
-                    {
-                        Debug.Log("Found .png background, loading");
-                        tempBackground = LoadSprite(file.FullName);
-                    }
-                    if (file.Extension == ".png" && (file.Name.ToLower().Contains("album") || file.Name.ToLower().Contains("cover")))
-                    {
-                        Debug.Log("Found .png cover, loading");
-                        tempAlbumCover = LoadSprite(file.FullName);
-                    }
+            var folderCheckResult = await ScanMapDirectory(dir, importer);
+            if (!folderCheckResult.isValid) continue;
 
-                    if (tempMapdata == null || tempSong == null)
-                    {
-                        Debug.LogError($"Invalid map data:{file.Name}, skipping");
-                        continue;
-                    }
-                    MapDataLoader.AddToSOList(MapDataLoader.PopulateSOs(tempMapdata, tempSong, tempBackground, tempAlbumCover));
-                }
-                catch (Exception ex)
-                {
-                    Debug.Log($"error while loading files {ex.Message}");
-                }
+            availableMaps.Add(BeatUtils.CreateMapMetadata(folderCheckResult.mapData, folderCheckResult.music, folderCheckResult.backgroundImage, folderCheckResult.albumCoverImage));
 
-            }
+
         }
+        return availableMaps;
 
     }
-    static async Task<AudioClip> LoadAudio(string path)
+    public static Task<AudioClip> LoadAudio(string path, AudioImporter importer)
     {
-        string uri = "file://" + path;
-        using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.MPEG))
+        var promise = new TaskCompletionSource<AudioClip>();
+        importer.Loaded += (clip) =>
         {
-            var operation = request.SendWebRequest();
-            while (!operation.isDone)
-                await Task.Yield();
+            if (clip != null)
+            {
+                promise.TrySetResult(clip);
+            }
+        };
+        importer.Import(path);
+        return promise.Task;
+    }
 
-            if (request.result == UnityWebRequest.Result.Success)
+    public static Texture2D LoadTexture2D(string path)
+    {
+        try
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            Texture2D texture = new(1, 1);
+            if (ImageConversion.LoadImage(texture, bytes))
             {
-                return DownloadHandlerAudioClip.GetContent(request);
+                return texture;
             }
-            else
-            {
-                Debug.LogError($"Failed to load audio from {path}: {request.error}");
-                return null;
-            }
+            throw new Exception("Texture can't be loaded");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error loading sprite from {path}: {ex.Message}");
+            return null;
         }
     }
-    static Sprite LoadSprite(string path)
+    public static Sprite LoadSprite(string path)
     {
         try
         {
             byte[] fileData = File.ReadAllBytes(path);
-            Texture2D texture = new Texture2D(2, 2);
-            if (texture.LoadImage(fileData))
+            Texture2D texture = new(1, 1);
+            if (ImageConversion.LoadImage(texture, fileData))
             {
                 return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
             }
@@ -151,10 +129,10 @@ static class FileUtils
             return null;
         }
     }
-    public static void LoadNewBitzmap(IProgress<string>? progressCallback)
+    public static void AddNewBitzmap(AudioImporter importer, IProgress<string>? progressCallback)
     {
         Debug.Log(progressCallback);
-        LoadNewBitzmap(FileUtils.OpenFilePicker(), progressCallback);
+        AddNewBitzMap(OpenFilePicker(), importer, progressCallback);
     }
 
     /// <summary>
@@ -162,7 +140,7 @@ static class FileUtils
     /// </summary>
     /// <param name="path">Path of the .bitzmap file</param>
     /// <param name="progressCallback">Progress callback messages</param>
-    public static void LoadNewBitzmap(string path, IProgress<string>? progressCallback)
+    public static async void AddNewBitzMap(string path, AudioImporter importer, IProgress<string>? progressCallback)
     {
         var tempFolder = Path.Join(Constants.APPLICATION_DATA, "temp");
         try
@@ -173,9 +151,9 @@ static class FileUtils
             System.IO.Compression.ZipFile.ExtractToDirectory(path, tempFolder);
 
             Debug.Log("Verifying content...");
-            var scanResult = VerifyBitzMapDirectoryStructure(tempFolder);
+            var scanResult = await ScanMapDirectory(tempFolder, importer);
 
-            if (!scanResult.isValid) throw new Exception();
+            if (!scanResult.isValid) throw new Exception("Invalid beatmap file given.");
 
             var mapFolder = Path.Join(Constants.APPLICATION_DATA, scanResult.mapData.identifier.ToString());
             if (Directory.Exists(mapFolder))
@@ -195,6 +173,7 @@ static class FileUtils
         }
         catch
         {
+
             throw;
         }
         finally
@@ -207,16 +186,16 @@ static class FileUtils
 
 
 
-    public static DirectoryScanResult VerifyBitzMapDirectoryStructure(string directory)
+    public static async Task<DirectoryScanResult> ScanMapDirectory(string directory, AudioImporter importer)
     {
         var dirFiles = Directory.GetFiles(directory);
         DirectoryScanResult directoryScanResult = new()
         {
             isValid = true,
-            backgroundImage = false,
-            albumCoverImage = false
+            backgroundImage = null,
+            albumCoverImage = null
         };
-        if (!dirFiles.Contains(Path.Join(directory, Constants.FILENAME_MUSIC)) || !dirFiles.Contains(Path.Join(directory, Constants.FILENAME_MAP)))
+        if (!dirFiles.Contains(Path.Join(directory, Constants.FILENAME_MAP)))
         {
             directoryScanResult.isValid = false;
             return directoryScanResult;
@@ -224,14 +203,28 @@ static class FileUtils
         try
         {
             directoryScanResult.mapData = BeatUtils.ReadBeatmap(Path.Join(directory, Constants.FILENAME_MAP)) ?? throw new Exception("Invalid beatmap file");
+            directoryScanResult.music = await LoadAudio(Path.Join(directory, directoryScanResult.mapData.musicFileName), importer);
+
         }
         catch
         {
             directoryScanResult.isValid = false;
         }
-        if (dirFiles.Contains(Path.Join(directory, Constants.FILENAME_BACKGROUND))) directoryScanResult.backgroundImage = true;
-        if (dirFiles.Contains(Path.Join(directory, Constants.FILENAME_ALBUM_COVER))) directoryScanResult.albumCoverImage = true;
+
+        if (dirFiles.Contains(Path.Join(directory, directoryScanResult.mapData.backgroundFileName))) directoryScanResult.backgroundImage = LoadTexture2D(Path.Join(directory, directoryScanResult.mapData.backgroundFileName));
+        if (dirFiles.Contains(Path.Join(directory, directoryScanResult.mapData.albumCoverFileName))) directoryScanResult.albumCoverImage = LoadTexture2D(Path.Join(directory, directoryScanResult.mapData.albumCoverFileName));
 
         return directoryScanResult;
     }
 }
+
+
+public struct DirectoryScanResult
+{
+    public bool isValid;
+    public BeatmapData mapData;
+    public AudioClip music;
+    public Texture2D? albumCoverImage;
+    public Texture2D? backgroundImage;
+}
+

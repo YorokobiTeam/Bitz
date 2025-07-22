@@ -60,6 +60,8 @@
 
 #MapCard {
     transform-origin: right top;
+    width: 560px;
+    height: 108px;
 }
 
 .enlarge-card-0 {

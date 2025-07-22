@@ -16,11 +16,14 @@ MonoBehaviour:
     identifier: 
     speed: 0
     offsetMs: 0
+    musicFileName: 
+    backgroundFileName: 
+    albumCoverFileName: 
     beats: []
     songTitle: I wish I could Fall
     songAuthor: Jamie Paige
-    mapAuthor: Yay fuck inline values?!
-  currentPoints: 00000099
-  coverArtwork: {fileID: -418015014367539744, guid: 8409ee6f674a7b3409ec4164d78bcd3d, type: 3}
-  backgroundArtwork: {fileID: 0}
+    mapAuthor: What
+  currentPoints: 92903129
+  coverArtwork: {fileID: 2800000, guid: 8409ee6f674a7b3409ec4164d78bcd3d, type: 3}
+  backgroundArtwork: {fileID: 2800000, guid: 8066b137edf4c0748a2cba22a5d20085, type: 3}
   music: {fileID: 0}

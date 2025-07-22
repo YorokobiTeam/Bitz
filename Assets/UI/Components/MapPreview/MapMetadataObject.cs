@@ -7,10 +7,10 @@ public class MapMetadataObject : ScriptableObject
 
     public BeatmapData mapData;
 
-    public string currentPoints;
+    public string currentPoints = "To be implemented";
 
-    public Sprite coverArtwork;
-    public Sprite backgroundArtwork;
+    public Texture2D coverArtwork;
+    public Texture2D backgroundArtwork;
     public AudioClip music;
 
 

@@ -14,7 +14,7 @@ public static class Constants
     public static readonly string PREVIOUSLY_LOADED_MAPS = Path.Join(APPLICATION_DATA, "maps.bitz.data");
 
 
-    public static readonly string FILENAME_MAP = "map.map";
+    public static readonly string FILENAME_MAP = "map.data";
     public static readonly string FILENAME_MUSIC = "music.mp3";
     // Hardcode for now, in the future these assets will be stored as downloaded from the StorageObjects.
     public static readonly string FILENAME_BACKGROUND = "background.png";

@@ -254,6 +254,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8a31cc9f332cf41b799fabdbac4f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapCard: {fileID: 9197481963319205126, guid: 555729f506b4b224e99e30b2fb33b9f3, type: 3}
+  mapCardStylesheet: {fileID: 7433441132597879392, guid: a6b99f2f7dc364b4bb8be7d46a168810, type: 3}
+  audioImporter: {fileID: 1382472477}
 --- !u!82 &590750652
 AudioSource:
   m_ObjectHideFlags: 0
@@ -576,6 +579,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1382472476}
+  - component: {fileID: 1382472477}
   m_Layer: 0
   m_Name: GameDataManager
   m_TagString: Untagged
@@ -598,6 +602,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1382472477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382472475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c85ca24aed0de7f4bb834c92b727d65b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
