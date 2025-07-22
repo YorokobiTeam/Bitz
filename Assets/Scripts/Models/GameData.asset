@@ -35,5 +35,3 @@ MonoBehaviour:
   coolHitCount: 0
   niceHitCount: 0
   missedHitCount: 0
-  albumCoverSprite: {fileID: 0}
-  backgroundSprite: {fileID: 0}

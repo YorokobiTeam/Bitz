@@ -17,6 +17,7 @@ public class MainMenuController : MonoBehaviour
     private VisualElement rightPanelRoot;
     private List<VisualElement> buttons = new();
     private List<VisualElement> maps = new();
+    private VisualElement logo;
 
     private Label recentPlaysTitle;
     private UIDocument ui;
@@ -29,20 +30,33 @@ public class MainMenuController : MonoBehaviour
 
     [SerializeField]
     AudioImporter audioImporter;
+    [SerializeField] AudioClip move;
+    private AudioSource audioSource;
+    [SerializeField] AudioClip backgroundMusic;
+    private AudioSource bm;
+
+	private float bounceHeight = 20f;
+    private float[] spectrum = new float[64];
 
 
-    public void Start()
+	public void Start()
     {
         ui = GetComponent<UIDocument>();
 
         menuPanelRoot = ui.rootVisualElement.Q<VisualElement>("MenuPanel");
+        audioSource = GetComponent<AudioSource>();
+        bm = GetComponent<AudioSource>();
+        bm.PlayOneShot(backgroundMusic);	
+
+		menuPanelRoot = ui.rootVisualElement.Q<VisualElement>("MenuPanel");
         rightPanelRoot = ui.rootVisualElement.Q<VisualElement>("MapList");
         recentPlaysTitle = ui.rootVisualElement.Q<Label>("RecentPlaysTitle");
         // Add menu items to the left panel list
         //TODO: Initialize and place the root into the container.
+        logo = ui.rootVisualElement.Q<VisualElement>("VisualElement");
 
 
-        menuPanelRoot.Children().FirstOrDefault().Focus();
+		menuPanelRoot.Children().FirstOrDefault().Focus();
 
 
         buttons.AddRange(menuPanelRoot.Children());
@@ -56,7 +70,9 @@ public class MainMenuController : MonoBehaviour
 
 
 
-    }
+
+		AnimateLogoBounceToMusic();
+	}
 
     public async void PlayMap(MapMetadataObject map)
     {
@@ -96,31 +112,48 @@ public class MainMenuController : MonoBehaviour
 
     private void HandleNavigation(NavigationMoveEvent e)
     {
-        switch (e.direction)
+        bool shouldPlaySound = false;
+
+		switch (e.direction)
         {
             case NavigationMoveEvent.Direction.Up:
-                if (isLeft)
-                    leftPanelCurrentIndex = WrapIndex(--leftPanelCurrentIndex, 0, buttons.Count - 1);
-                else
+				if (isLeft)
+                {
+					leftPanelCurrentIndex = WrapIndex(--leftPanelCurrentIndex, 0, buttons.Count - 1);
+                    shouldPlaySound = true;
+				}
+				else
                     rightPanelCurrentIndex = WrapIndex(--rightPanelCurrentIndex, 0, maps.Count - 2);
                 break;
             case NavigationMoveEvent.Direction.Down:
-                if (isLeft)
+				if (isLeft)
+                {
                     leftPanelCurrentIndex = WrapIndex(++leftPanelCurrentIndex, 0, buttons.Count - 1);
+                    shouldPlaySound = true;
+				}
                 else
                     rightPanelCurrentIndex = WrapIndex(++rightPanelCurrentIndex, 0, maps.Count - 1);
                 break;
             case NavigationMoveEvent.Direction.Left:
             case NavigationMoveEvent.Direction.Right:
-                isLeft = !isLeft;
+				isLeft = !isLeft;
+                shouldPlaySound = true;
+				
                 break;
         }
         ;
 
-        if (isLeft) buttons[leftPanelCurrentIndex].Focus();
+        if (shouldPlaySound == true)
+        {
+            PlayMoveSound();
+		}
+
+		if (isLeft) buttons[leftPanelCurrentIndex].Focus();
         else maps[rightPanelCurrentIndex].Focus();
         RelinkClasses();
-    }
+
+        
+	}
 
     private void RelinkClasses(InteractionSrc interactionSrc = InteractionSrc.None)
     {
@@ -167,7 +200,39 @@ public class MainMenuController : MonoBehaviour
         return ((indx - min) % range + range) % range + min;
     }
 
-    enum InteractionSrc
+    private void PlayMoveSound()
+    {
+        if (audioSource != null && move != null)
+        {
+            audioSource.PlayOneShot(move);
+        }
+	}
+
+	private void AnimateLogoBounceToMusic()
+	{
+		logo.schedule.Execute(() =>
+		{
+			//Get audio spectrum data
+			bm.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
+
+			//Low frequency analysis to generate rhythm
+			float intensity = 0f;
+			for (int i = 1; i <= 5; i++)
+			{
+				intensity += spectrum[i]; 
+			}
+			intensity *= 400f; 
+
+			float yOffset = Mathf.Clamp(intensity, 0, bounceHeight);
+
+			//make the logo bounce
+			logo.style.translate = new StyleTranslate(new Translate(0, yOffset));
+
+			AnimateLogoBounceToMusic(); 
+		}).Every(16); //60fps
+	}
+
+	enum InteractionSrc
     {
         Left,
         Right,

@@ -257,6 +257,8 @@ MonoBehaviour:
   mapCard: {fileID: 9197481963319205126, guid: 555729f506b4b224e99e30b2fb33b9f3, type: 3}
   mapCardStylesheet: {fileID: 7433441132597879392, guid: a6b99f2f7dc364b4bb8be7d46a168810, type: 3}
   audioImporter: {fileID: 1382472477}
+  move: {fileID: 8300000, guid: b840fbdaa8fd29a4b8cd1b07801267d2, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: 3bfb3e6609c7da7429a70504fe71614f, type: 3}
 --- !u!82 &590750652
 AudioSource:
   m_ObjectHideFlags: 0
