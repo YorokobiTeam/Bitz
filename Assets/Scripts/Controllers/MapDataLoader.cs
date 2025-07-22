@@ -6,8 +6,8 @@ public class MapDataLoader : MonoBehaviour
     public static BitzSongData PopulateSOs(
         BeatmapData mapData,
         AudioClip songData,
-        Texture2D? backgroundImage,
-        Texture2D? albumCover
+        Sprite? backgroundImage,
+        Sprite? albumCover
         )
     {
         if (mapData == null || songData == null) return null;

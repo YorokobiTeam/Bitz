@@ -6,6 +6,6 @@ public class BitzSongData : ScriptableObject
 {
     public BeatmapData beatmaps;
     public AudioClip musicFile;
-    public Texture2D backgroundImage;
-    public Texture2D albumCoverImage;
+    public Sprite backgroundImage;
+    public Sprite albumCoverImage;
 }

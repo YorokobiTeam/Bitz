@@ -5,7 +5,10 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class FileController : MonoBehaviour
 {
@@ -100,11 +103,22 @@ public class FileController : MonoBehaviour
 
     public void Start()
     {
+        
         Debug.Log("FileController started, setting up game files");
         
+        var mapFolder = Path.Join(Constants.APPLICATION_DATA, "maps");
+        if(!Directory.Exists(mapFolder))
+        {
+            throw new Exception("Error while trying to read maps folder:" + mapFolder);
+        }
+        UnzipAllMaps(mapFolder);
+        LoadALlMaps(mapFolder);
+
+
     }
     public static void UnzipAllMaps(string path)
     {
+
         if (!Directory.Exists(path))
         {
             Debug.LogError($"Directory {path} does not exist.");
@@ -130,7 +144,103 @@ public class FileController : MonoBehaviour
             }
         }
     }
+    public static async void LoadALlMaps(string path)
+    {
+        
+        if (!Directory.Exists(path))
+        {
+            Debug.Log($"Path not found {path}");
+            return;
+        }
+        DirectoryInfo workingDir = new DirectoryInfo(path);
+        var mapDir = workingDir.GetDirectories();
+        foreach (var dir in mapDir)
+        {
+            var mapFiles = dir.GetFiles();
+            foreach(var file in mapFiles)
+            {
+                try
+                {
+                    BeatmapData tempMapdata = null;
+                    AudioClip tempSong = null;
+                    Sprite tempBackground = null;
+                    Sprite tempAlbumCover = null;
+                    if (file.Extension == ".json")
+                    {
+                        Debug.Log("Found .json, loading");
+                        tempMapdata = JsonUtility.FromJson<BeatmapData>(File.ReadAllText(file.FullName));
+                    }
+                    if (file.Extension == ".mp3")
+                    {
+                        Debug.Log("Found .mp3, loading");
+                        tempSong = await LoadAudio(file.FullName);
+                    }
+                    if(file.Extension == ".png" && (file.Name.ToLower().Contains("bg") || file.Name.ToLower().Contains("background")))
+                    {
+                        Debug.Log("Found .png background, loading");
+                        tempBackground = LoadSprite(file.FullName);
+                    }
+                    if( file.Extension == ".png" && (file.Name.ToLower().Contains("album") || file.Name.ToLower().Contains("cover")))
+                    {
+                        Debug.Log("Found .png cover, loading");
+                        tempAlbumCover = LoadSprite(file.FullName);
+                    }
 
+                    if(tempMapdata == null || tempSong == null)
+                    {
+                        Debug.LogError($"Invalid map data:{file.Name}, skipping");
+                        continue;
+                    }
+                    MapDataLoader.AddToSOList(MapDataLoader.PopulateSOs(tempMapdata, tempSong, tempBackground, tempAlbumCover));
+                }
+                catch (Exception ex)
+                {
+                    Debug.Log($"error while loading files {ex.Message}");
+                }
+
+            }
+        }
+        
+    }
+    static async Task<AudioClip> LoadAudio(string path)
+    {
+        string uri = "file://" + path;
+        using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.MPEG))
+        {
+            var operation = request.SendWebRequest();
+            while (!operation.isDone)
+                await Task.Yield();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return DownloadHandlerAudioClip.GetContent(request);
+            }
+            else
+            {
+                Debug.LogError($"Failed to load audio from {path}: {request.error}");
+                return null;
+            }
+        }
+    }
+    static Sprite LoadSprite(string path)
+    {
+        try
+        {
+            byte[] fileData = File.ReadAllBytes(path);
+            Texture2D texture = new Texture2D(2, 2);
+            if (texture.LoadImage(fileData))
+            {
+                return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            }
+            Debug.LogError($"Failed to load sprite from {path}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error loading sprite from {path}: {ex.Message}");
+            return null;
+        }
+    }
     
 }
 
