@@ -128,9 +128,9 @@ public class FileController : MonoBehaviour
         var fileInfo = dirInfo.GetFiles();
         foreach (var file in fileInfo)
         {
-            if (file.Extension != ".bitzmap")
+            if (file.Extension != ".bitzdata")
             {
-                Debug.LogWarning($"File {file.Name} is not a .bitzmap file, skipping.");
+                Debug.LogWarning($"File {file.Name} is not a .bitzdata file, skipping.");
                 continue;
             }
             try
@@ -139,7 +139,7 @@ public class FileController : MonoBehaviour
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to load bitzmap {file.Name}: {ex.Message}");
+                Debug.LogError($"Failed to load bitzdata {file.Name}: {ex.Message}");
 
             }
         }
