@@ -4,26 +4,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MapMetadataObject", menuName = "Scriptable Objects/MapMetadataObject")]
 public class MapMetadataObject : ScriptableObject
 {
-    public string mapID { get; private set; }
 
-    public string mapTitle;
+    public BeatmapData mapData;
 
-    public string musicAuthor;
+    public string currentPoints = "To be implemented";
 
-    public string mapAuthor;
+    public Texture2D coverArtwork;
+    public Texture2D backgroundArtwork;
+    public AudioClip music;
 
-    public string currentPoints;
 
-    public Sprite coverArtwork;
-
-    public bool isOffline = true;
-
-    MapMetadataObject()
-    {
-        if (isOffline)
-        {
-
-        }
-    }
 
 }
