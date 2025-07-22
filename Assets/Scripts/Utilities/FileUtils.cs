@@ -12,13 +12,13 @@ static class FileUtils
 {
     public static string? OpenFilePicker()
     {
-        var fileDialog = new OpenFileDialog()
+        var fileDialog = new System.Windows.Forms.OpenFileDialog()
         {
             Filter = "Bitz Map Files (*.bitzmap)|*.bitzmap",
             Title = "Open the beatmap file."
         };
 
-        if (fileDialog.ShowDialog() == DialogResult.OK)
+        if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
             Debug.Log(fileDialog.FileName);
             return fileDialog.FileName;
@@ -54,7 +54,7 @@ static class FileUtils
             }
         }
     }
-    public static async void LoadALlMaps(string path)
+    public static async void LoadAllMaps(string path)
     {
 
         if (!Directory.Exists(path))

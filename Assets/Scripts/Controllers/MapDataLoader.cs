@@ -3,7 +3,7 @@ using System.Collections.Generic;
 public class MapDataLoader : MonoBehaviour
 {
     public static List<BitzSongData> listSongData;
-    public static BitzSongData PopulateSOs(
+    public static BitzSongData CreateSongData(
         BeatmapData mapData,
         AudioClip songData,
         Sprite? backgroundImage,
@@ -18,9 +18,9 @@ public class MapDataLoader : MonoBehaviour
         newData.albumCoverImage = albumCover;
         return newData;
     }
-    public static void AddToSOList(BitzSongData xongData)
+    public static void AddToSOList(BitzSongData songData)
     {
-        listSongData.Add(xongData);
+        listSongData.Add(songData);
     }
     public void Start()
     {

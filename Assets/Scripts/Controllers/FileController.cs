@@ -27,7 +27,7 @@ public class FileController : MonoBehaviour
             throw new Exception("Error while trying to read maps folder:" + mapFolder);
         }
         FileUtils.UnzipAllMaps(mapFolder);
-        FileUtils.LoadALlMaps(mapFolder);
+        FileUtils.LoadAllMaps(mapFolder);
 
 
     }

@@ -24,4 +24,20 @@ static class BeatUtils
         f.Close();
         File.WriteAllText(Path.Join(Constants.APPLICATION_DATA, saveName), JsonUtility.ToJson(bm));
     }
+
+    public static BitzSongData CreateSongData(
+    BeatmapData mapData,
+    AudioClip songData,
+    Sprite? backgroundImage,
+    Sprite? albumCover
+    )
+    {
+        if (mapData == null || songData == null) return null;
+        BitzSongData newData = ScriptableObject.CreateInstance<BitzSongData>();
+        newData.beatmaps = mapData;
+        newData.musicFile = songData;
+        newData.backgroundImage = backgroundImage;
+        newData.albumCoverImage = albumCover;
+        return newData;
+    }
 }
