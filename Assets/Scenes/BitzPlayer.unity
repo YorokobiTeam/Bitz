@@ -3466,7 +3466,7 @@ GameObject:
   - component: {fileID: 1081803570}
   - component: {fileID: 1081803569}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: PauseScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3486,7 +3486,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseMenu: {fileID: 1967285045}
   UIControllerInstance: {fileID: 1785546113}
-  uiDocument: {fileID: 1967285046}
 --- !u!114 &1081803570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5638,6 +5637,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatPrefab: {fileID: 1968023784}
+  mapData:
+    identifier: 
+    speed: 0
+    offsetMs: 0
+    musicFileName: 
+    backgroundFileName: 
+    albumCoverFileName: 
+    beats: []
+    songTitle: 
+    songAuthor: 
+    mapAuthor: 
   hitboxObject: {fileID: 1790882697}
   gameData: {fileID: 11400000, guid: 4cd6e8a44040b834cba86c16705e3c46, type: 2}
   pointsBox: {fileID: 1775412801}
@@ -5683,6 +5693,8 @@ MonoBehaviour:
   hitComboAnimator: {fileID: 601732544}
   hitSfx: {fileID: 1716454402}
   scoreText: {fileID: 1822717208}
+  retryButton: {fileID: 301307546}
+  backHomeButton: {fileID: 684778726}
   hitComboText: {fileID: 946430724}
 --- !u!114 &1785546111
 MonoBehaviour:
@@ -6757,7 +6769,7 @@ GameObject:
   m_Icon: {fileID: 2800000, guid: d2ddd27a2c7de4ad99b3d8c9d00e4265, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2008163234
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,7 +13,11 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     AudioSource soundEffectPlayer;
 
-
+    public void Start()
+    {
+        this.musicCrossfadeChannelX.loop = true;
+        this.musicCrossfadeChannelY.loop = true;
+    }
     public void PlayMusic(AudioClip toPlay)
     {
         // Start crossfade for when nothing is playing

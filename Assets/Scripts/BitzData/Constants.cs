@@ -15,10 +15,6 @@ public static class Constants
 
 
     public static readonly string FILENAME_MAP = "map.data";
-    public static readonly string FILENAME_MUSIC = "music.mp3";
-    // Hardcode for now, in the future these assets will be stored as downloaded from the StorageObjects.
-    public static readonly string FILENAME_BACKGROUND = "background.png";
-    public static readonly string FILENAME_ALBUM_COVER = "albumCover.png";
 
 
     public static readonly string SUPABASE_URL = "https://lkirbjjcaminpbjemsuo.supabase.co";

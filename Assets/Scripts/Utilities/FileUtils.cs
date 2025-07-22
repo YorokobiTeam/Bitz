@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -61,9 +62,8 @@ static class FileUtils
         if (!Directory.Exists(path))
         {
             Debug.Log($"Dir not found {path}");
-            return null;
+            return new List<MapMetadataObject>();
         }
-        DirectoryInfo workingDir = new(path);
         var mapDir = Directory.GetDirectories(path);
         List<MapMetadataObject> availableMaps = new();
         foreach (var dir in mapDir)
@@ -71,7 +71,7 @@ static class FileUtils
             var folderCheckResult = await ScanMapDirectory(dir, importer);
             if (!folderCheckResult.isValid) continue;
 
-            availableMaps.Add(BeatUtils.CreateMapMetadata(folderCheckResult.mapData, folderCheckResult.music, folderCheckResult.backgroundImage, folderCheckResult.albumCoverImage));
+            availableMaps.Add(BeatUtils.CreateMapMetadata(folderCheckResult.mapData, folderCheckResult.backgroundImage, folderCheckResult.albumCoverImage));
 
 
         }
@@ -131,7 +131,7 @@ static class FileUtils
     }
     public static void AddNewBitzmap(AudioImporter importer, IProgress<string>? progressCallback)
     {
-        Debug.Log(progressCallback);
+        Debug.Log(importer);
         AddNewBitzMap(OpenFilePicker(), importer, progressCallback);
     }
 
@@ -150,30 +150,36 @@ static class FileUtils
             Debug.Log("Extracting Bitzmap...");
             System.IO.Compression.ZipFile.ExtractToDirectory(path, tempFolder);
 
-            Debug.Log("Verifying content...");
-            var scanResult = await ScanMapDirectory(tempFolder, importer);
+            var mapFolder = Path.Join(Constants.APPLICATION_DATA, BeatUtils.ReadBeatmap(Path.Join(tempFolder, Constants.FILENAME_MAP)).identifier);
 
-            if (!scanResult.isValid) throw new Exception("Invalid beatmap file given.");
-
-            var mapFolder = Path.Join(Constants.APPLICATION_DATA, scanResult.mapData.identifier.ToString());
             if (Directory.Exists(mapFolder))
             {
                 Debug.Log("Deleting previous folder...");
                 Directory.Delete(mapFolder, true);
             }
             Directory.CreateDirectory(mapFolder);
+
             Debug.Log("Moving files...");
-            // Lets just move all the files im too lazy to type it all out...
             foreach (string fileName in Directory.GetFiles(tempFolder))
             {
                 File.Move(fileName, Path.Join(mapFolder, Path.GetFileName(fileName)));
             }
+            Debug.Log("Verifying content...");
+
+            var scanResult = await ScanMapDirectory(mapFolder, importer);
+
+            if (!scanResult.isValid)
+            {
+                Directory.Delete(mapFolder, true);
+                throw new Exception("Invalid beatmap file given.");
+            }
+
             Debug.Log("Done!");
             return;
         }
-        catch
+        catch (Exception e)
         {
-
+            Debug.Log(e.Message);
             throw;
         }
         finally
@@ -189,6 +195,7 @@ static class FileUtils
     public static async Task<DirectoryScanResult> ScanMapDirectory(string directory, AudioImporter importer)
     {
         var dirFiles = Directory.GetFiles(directory);
+        Debug.Log(importer);
         DirectoryScanResult directoryScanResult = new()
         {
             isValid = true,
@@ -203,11 +210,12 @@ static class FileUtils
         try
         {
             directoryScanResult.mapData = BeatUtils.ReadBeatmap(Path.Join(directory, Constants.FILENAME_MAP)) ?? throw new Exception("Invalid beatmap file");
-            directoryScanResult.music = await LoadAudio(Path.Join(directory, directoryScanResult.mapData.musicFileName), importer);
-
+            //Debug.Log(directoryScanResult.mapData.musicFileName);
+            //directoryScanResult.music = await LoadAudio(Path.Join(directory, directoryScanResult.mapData.musicFileName), importer);
         }
-        catch
+        catch (Exception e)
         {
+            Debug.Log(e.Message);
             directoryScanResult.isValid = false;
         }
 
@@ -223,7 +231,6 @@ public struct DirectoryScanResult
 {
     public bool isValid;
     public BeatmapData mapData;
-    public AudioClip music;
     public Texture2D? albumCoverImage;
     public Texture2D? backgroundImage;
 }

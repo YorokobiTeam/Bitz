@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 
@@ -18,6 +19,7 @@ public class MainMenuController : MonoBehaviour
     private List<VisualElement> buttons = new();
     private List<VisualElement> maps = new();
     private VisualElement logo;
+    private VisualElement root;
 
     private Label recentPlaysTitle;
     private UIDocument ui;
@@ -28,36 +30,30 @@ public class MainMenuController : MonoBehaviour
     private Button openFileButton;
     private List<MapMetadataObject> mapMetadataObjects;
 
-    [SerializeField]
-    AudioImporter audioImporter;
-    [SerializeField] AudioClip move;
-    private AudioSource audioSource;
-    [SerializeField] AudioClip backgroundMusic;
-    private AudioSource musicPlayer;
+
+    public AudioImporter audioImporter;
+    [SerializeField] AudioClip navigateSfx;
 
     private float bounceHeight = 20f;
     private float[] spectrum = new float[64];
 
     [SerializeField]
-    SoundManager manager;
+    SoundManager sound;
 
+    public Texture2D defaultBackground;
+    public AudioClip defaultMusic;
 
-    public void Start()
+    public async void Start()
     {
         ui = GetComponent<UIDocument>();
 
         menuPanelRoot = ui.rootVisualElement.Q<VisualElement>("MenuPanel");
-        audioSource = GetComponent<AudioSource>();
-        musicPlayer = GetComponent<AudioSource>();
-        musicPlayer.PlayOneShot(backgroundMusic);
 
         menuPanelRoot = ui.rootVisualElement.Q<VisualElement>("MenuPanel");
         rightPanelRoot = ui.rootVisualElement.Q<VisualElement>("MapList");
         recentPlaysTitle = ui.rootVisualElement.Q<Label>("RecentPlaysTitle");
-        // Add menu items to the left panel list
-        //TODO: Initialize and place the root into the container.
+        root = ui.rootVisualElement.Q<VisualElement>("Root");
         logo = ui.rootVisualElement.Q<VisualElement>("VisualElement");
-
 
         menuPanelRoot.Children().FirstOrDefault().Focus();
 
@@ -70,24 +66,40 @@ public class MainMenuController : MonoBehaviour
         ui.rootVisualElement.RegisterCallback<NavigationMoveEvent>(HandleNavigation);
         ReloadMaps();
         RelinkClasses();
+        if (this.mapMetadataObjects.Count > 0)
+        {
+            root.style.backgroundImage = mapMetadataObjects[0].backgroundArtwork;
+            sound.PlayMusic(await FileUtils.LoadAudio(Path.Join(Constants.APPLICATION_DATA,
+                mapMetadataObjects[rightPanelCurrentIndex].mapData.identifier,
+                mapMetadataObjects[rightPanelCurrentIndex].mapData.musicFileName),
+                audioImporter));
+        }
+        else
+        {
+            root.style.backgroundImage = defaultBackground;
+            sound.PlayMusic(defaultMusic);
+        }
 
-
-
-
-        AnimateLogoBounceToMusic();
     }
+    [SerializeField]
+    GameData gameData;
 
-    public async void PlayMap(MapMetadataObject map)
+    public void PlayMap(MapMetadataObject map)
     {
-
+        var basePath = Path.Combine(Constants.APPLICATION_DATA, map.mapData.identifier);
+        gameData.beatMapFileDir = Path.Join(basePath, Constants.FILENAME_MAP);
+        gameData.musicFileDir = Path.Join(basePath, map.mapData.musicFileName);
+        gameData.albumCoverImageDir = Path.Join(basePath, map.mapData.albumCoverFileName);
+        gameData.backgroundImageDir = Path.Join(basePath, map.mapData.backgroundFileName);
+        SceneManager.LoadScene("BitzPlayer");
     }
 
     public async void ReloadMaps()
     {
-
+        maps.Clear();
+        rightPanelRoot.Clear();
         this.mapMetadataObjects = await FileUtils.LoadAllMaps(Constants.APPLICATION_DATA, this.audioImporter);
 
-        rightPanelRoot.Clear();
         foreach (var obj in mapMetadataObjects)
         {
             Debug.Log("boo");
@@ -96,10 +108,13 @@ public class MainMenuController : MonoBehaviour
             ve.style.flexGrow = 0;
             ve.dataSource = obj;
             ve.name = "MapCard";
+            ve.RegisterCallback<PointerDownEvent>((callback) =>
+            {
+                PlayMap(obj);
+            });
             rightPanelRoot.Add(ve);
         }
         maps.AddRange(rightPanelRoot.Children());
-
 
     }
 
@@ -109,11 +124,15 @@ public class MainMenuController : MonoBehaviour
         {
             Debug.Log(callback);
         });
-        FileUtils.AddNewBitzmap(this.audioImporter, progressReporter);
+        Debug.Log(this.audioImporter);
+        FileUtils.AddNewBitzmap(GetComponent<NAudioImporter>(), null);
+        ReloadMaps();
+        RelinkClasses();
     }
+    [SerializeField, Range(0, 5f)]
+    float backgroundFadeTime = 0.5f;
 
-
-    private void HandleNavigation(NavigationMoveEvent e)
+    private async void HandleNavigation(NavigationMoveEvent e)
     {
         bool shouldPlaySound = false;
 
@@ -126,7 +145,11 @@ public class MainMenuController : MonoBehaviour
                     shouldPlaySound = true;
                 }
                 else
+                {
                     rightPanelCurrentIndex = WrapIndex(--rightPanelCurrentIndex, 0, maps.Count - 2);
+
+                }
+
                 break;
             case NavigationMoveEvent.Direction.Down:
                 if (isLeft)
@@ -135,7 +158,9 @@ public class MainMenuController : MonoBehaviour
                     shouldPlaySound = true;
                 }
                 else
+                {
                     rightPanelCurrentIndex = WrapIndex(++rightPanelCurrentIndex, 0, maps.Count - 1);
+                }
                 break;
             case NavigationMoveEvent.Direction.Left:
             case NavigationMoveEvent.Direction.Right:
@@ -148,11 +173,31 @@ public class MainMenuController : MonoBehaviour
 
         if (shouldPlaySound == true)
         {
-            PlayMoveSound();
+            sound.PlaySfx(navigateSfx);
         }
 
+
         if (isLeft) buttons[leftPanelCurrentIndex].Focus();
-        else maps[rightPanelCurrentIndex].Focus();
+        else
+        {
+
+            maps[rightPanelCurrentIndex].Focus();
+            // Fade the bg img
+            LeanTween.value(gameObject, (val) =>
+            {
+                root.style.unityBackgroundImageTintColor = new Color(1, 1, 1, val);
+            }, 1, 0, backgroundFadeTime).setOnComplete(() =>
+            {
+                root.style.backgroundImage = mapMetadataObjects[rightPanelCurrentIndex].backgroundArtwork;
+                LeanTween.value(gameObject, (val) =>
+                {
+                    root.style.unityBackgroundImageTintColor = new Color(1, 1, 1, val);
+                }, 0, 1, backgroundFadeTime);
+            });
+
+
+            sound.PlayMusic(await FileUtils.LoadAudio(Path.Join(Constants.APPLICATION_DATA, mapMetadataObjects[rightPanelCurrentIndex].mapData.identifier, mapMetadataObjects[rightPanelCurrentIndex].mapData.musicFileName), audioImporter));
+        }
         RelinkClasses();
 
 
@@ -192,10 +237,6 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    private void PopulateRightPanelTree(VisualElement ve)
-    {
-        //todo: read file from Bitz/user/<0 if unauth> <id if auth>/history.json
-    }
 
     private int WrapIndex(int indx, int min, int max)
     {
@@ -203,35 +244,8 @@ public class MainMenuController : MonoBehaviour
         return ((indx - min) % range + range) % range + min;
     }
 
-    private void PlayMoveSound()
-    {
-        if (audioSource != null && move != null)
-        {
-            audioSource.PlayOneShot(move);
-        }
-    }
 
-    private void AnimateLogoBounceToMusic()
-    {
-        logo.schedule.Execute(() =>
-        {
-            //Get audio spectrum data
-            musicPlayer.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
 
-            //Low frequency analysis to generate rhythm
-            float intensity = 0f;
-            for (int i = 1; i <= 5; i++)
-            {
-                intensity += spectrum[i];
-            }
-            intensity *= 400f;
-
-            float yOffset = Mathf.Clamp(intensity, 0, bounceHeight);
-            //make the logo bounce
-            logo.style.scale = new Scale(new Vector3(1.2f, 1.2f));
-
-        }).Every(16); //60fps
-    }
 
     enum InteractionSrc
     {

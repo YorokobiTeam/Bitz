@@ -42,15 +42,13 @@ static class BeatUtils
 
     public static MapMetadataObject CreateMapMetadata(
     BeatmapData mapData,
-    AudioClip music,
     Texture2D? background,
     Texture2D? albumCover
     )
     {
-        if (mapData == null || music == null) return null;
+        if (mapData == null) return null;
         MapMetadataObject newData = ScriptableObject.CreateInstance<MapMetadataObject>();
         newData.mapData = mapData;
-        newData.music = music;
         newData.backgroundArtwork = background;
         newData.coverArtwork = albumCover;
         newData.currentPoints = "0";

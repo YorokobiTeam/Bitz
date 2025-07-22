@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class GameController : MonoBehaviour
     public Animator hitComboAnimator;
     public AudioSource hitSfx;
     public TMP_Text scoreText;
+
+    public Button retryButton;
+    public Button backHomeButton;
 
     public void Start()
     {
@@ -31,6 +35,8 @@ public class GameController : MonoBehaviour
         beatController.SpawnBeats();
         this.scoreText.text = UIUtils.GetScoreText(this.gameData.score, 9);
         uiController.OnUpdateGameState += HandleGameStateUpdate;
+        retryButton.onClick.AddListener(Retry);
+        backHomeButton.onClick.AddListener(BackHome);
     }
 
     private void HandleGameStateUpdate(GameState gameState)
@@ -118,6 +124,11 @@ public class GameController : MonoBehaviour
     public void Retry()
     {
         SceneManager.LoadScene("BitzPlayer");
+    }
+
+    public void BackHome()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
 

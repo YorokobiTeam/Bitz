@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 3d0e5c936eeab5f449e220b19622b89f
+  - enabled: 1
+    path: Assets/Scenes/BitzPlayer.unity
+    guid: f990f0720773511408ab69fdd716a338
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

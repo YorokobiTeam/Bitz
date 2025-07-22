@@ -11,7 +11,6 @@ public class MapMetadataObject : ScriptableObject
 
     public Texture2D coverArtwork;
     public Texture2D backgroundArtwork;
-    public AudioClip music;
 
 
 
