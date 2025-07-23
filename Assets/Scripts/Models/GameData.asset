@@ -16,6 +16,9 @@ MonoBehaviour:
     identifier: 
     speed: 0
     offsetMs: 0
+    musicFileName: 
+    backgroundFileName: 
+    albumCoverFileName: 
     beats: []
     songTitle: 
     songAuthor: 
@@ -27,13 +30,13 @@ MonoBehaviour:
   scoreRankA: 1000
   scoreRankB: 500
   timeScale: 1000
-  beatMapFileDir: C:\Users\ASUS\Downloads\Freaky_Undulation.json
-  musicFileDir: C:\Users\ASUS\Downloads\Freaky.mp3
-  backgroundImageDir: C:\Users\ASUS\Desktop\mpv-shot0033.jpg
-  albumCoverImageDir: C:\Users\ASUS\Desktop\6n3aqb.jpg
-  epicHitCount: 7
-  coolHitCount: 2
-  niceHitCount: 5
-  missedHitCount: 19
+  beatMapFileDir: E:\Program Files\Unity\Projects\Freaky_Undulation.json
+  musicFileDir: E:\Media\song\holywatr - fade.mp3
+  backgroundImageDir: E:\Media\images\voidwalkler.png
+  albumCoverImageDir: E:\Media\images\bro what.jpg
+  epicHitCount: 0
+  coolHitCount: 0
+  niceHitCount: 0
+  missedHitCount: 0
   albumCoverSprite: {fileID: 0}
   backgroundSprite: {fileID: 0}
