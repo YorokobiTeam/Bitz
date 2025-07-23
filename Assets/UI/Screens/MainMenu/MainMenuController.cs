@@ -57,6 +57,11 @@ public class MainMenuController : MonoBehaviour
 
         menuPanelRoot.Children().FirstOrDefault().Focus();
 
+        ui.rootVisualElement.Q<Button>("Exit").clicked += () =>
+        {
+            Application.Quit();
+        };
+
 
         buttons.AddRange(menuPanelRoot.Children());
 
@@ -83,7 +88,10 @@ public class MainMenuController : MonoBehaviour
     }
     [SerializeField]
     GameData gameData;
-
+    [SerializeField]
+    UnityEngine.UI.Image sceneTransitioner;
+    [SerializeField, Range(0.5f, 10f)]
+    float sceneTransitionTime;
     public void PlayMap(MapMetadataObject map)
     {
         var basePath = Path.Combine(Constants.APPLICATION_DATA, map.mapData.identifier);
@@ -91,7 +99,11 @@ public class MainMenuController : MonoBehaviour
         gameData.musicFileDir = Path.Join(basePath, map.mapData.musicFileName);
         gameData.albumCoverImageDir = Path.Join(basePath, map.mapData.albumCoverFileName);
         gameData.backgroundImageDir = Path.Join(basePath, map.mapData.backgroundFileName);
-        SceneManager.LoadScene("BitzPlayer");
+        LeanTween.move(sceneTransitioner.rectTransform, Vector3.zero, sceneTransitionTime).setEaseOutExpo().setOnComplete(() =>
+        {
+            SceneManager.LoadScene("BitzPlayer");
+        });
+
     }
 
     public async void ReloadMaps()
