@@ -17,8 +17,6 @@ public class PauseMenu : MonoBehaviour
 
     private List<Button> menuButtons = new List<Button>();
     private int currentButtonIndex = 0;
-    
-
 
     private float selectedScale = 1.2f;
     private float defaultScale = 1f;
