@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -12,14 +11,14 @@ public class PauseMenu : MonoBehaviour
 
     public static bool isPaused = false;
 
-    private UIDocument uiDocument;
+    public UIDocument uiDocument;
     private List<Button> menuButtons = new List<Button>();
     private int currentButtonIndex = 0;
+    
+
 
     public void Start()
     {
-        pauseMenu.SetActive(false);
-        uiDocument = GetComponent<UIDocument>();
         var root = uiDocument.rootVisualElement;
 
         var resumeButton = root.Q<Button>("ResumeBtn");
@@ -29,6 +28,9 @@ public class PauseMenu : MonoBehaviour
         resumeButton.clicked += ResumeGame;
         settingsButton.clicked += OpenSettings;
         exitButton.clicked += ExitGame;
+        menuButtons.Add(resumeButton);
+        menuButtons.Add(settingsButton);
+        menuButtons.Add(exitButton);
     }
 
     private void Update()
