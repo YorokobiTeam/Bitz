@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -7,24 +6,30 @@ using UnityEngine.UIElements;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenu;
+    public GameObject settingMenu;
 
     public UIController UIControllerInstance;
 
     public static bool isPaused = false;
 
-    private UIDocument uiDocument;
     private List<Button> menuButtons = new List<Button>();
     private int currentButtonIndex = 0;
+
+    private void Awake()
+    {
+        pauseMenu.SetActive(false);
+        settingMenu.SetActive(false);
+    }
 
     public void Start()
     {
         pauseMenu.SetActive(false);
-        uiDocument = GetComponent<UIDocument>();
+        settingMenu.SetActive(false);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !settingMenu.activeSelf)
         {
             if (isPaused)
             {
@@ -38,39 +43,39 @@ public class PauseMenu : MonoBehaviour
 
     }
 
-    private void OnNavigate(NavigationMoveEvent evt)
-    {
-        if (!isPaused) return;
+    //private void OnNavigate(NavigationMoveEvent evt)
+    //{
+    //    if (!isPaused) return;
 
-        switch (evt.direction)
-        {
-            case NavigationMoveEvent.Direction.Up:
-                currentButtonIndex = WrapIndex(--currentButtonIndex, 0, menuButtons.Count - 1);
-                break;
-            case NavigationMoveEvent.Direction.Down:
-                currentButtonIndex = WrapIndex(++currentButtonIndex, 0, menuButtons.Count - 1);
-                break;
-            case NavigationMoveEvent.Direction.None:
-                break;
-        }
-        menuButtons[currentButtonIndex].Focus();
-        UpdateButtonSelection();
-    }
-    private void UpdateButtonSelection()
-    {
-        for (int i = 0; i < menuButtons.Count; i++)
-        {
-            if (i == currentButtonIndex)
-            {
-                menuButtons[i].AddToClassList("selected");
-                menuButtons[i].Focus();
-            }
-            else
-            {
-                menuButtons[i].RemoveFromClassList("selected");
-            }
-        }
-    }
+    //    switch (evt.direction)
+    //    {
+    //        case NavigationMoveEvent.Direction.Up:
+    //            currentButtonIndex = WrapIndex(--currentButtonIndex, 0, menuButtons.Count - 1);
+    //            break;
+    //        case NavigationMoveEvent.Direction.Down:
+    //            currentButtonIndex = WrapIndex(++currentButtonIndex, 0, menuButtons.Count - 1);
+    //            break;
+    //        case NavigationMoveEvent.Direction.None:
+    //            break;
+    //    }
+    //    menuButtons[currentButtonIndex].Focus();
+    //    UpdateButtonSelection();
+    //}
+    //private void UpdateButtonSelection()
+    //{
+    //    for (int i = 0; i < menuButtons.Count; i++)
+    //    {
+    //        if (i == currentButtonIndex)
+    //        {
+    //            menuButtons[i].AddToClassList("selected");
+    //            menuButtons[i].Focus();
+    //        }
+    //        else
+    //        {
+    //            menuButtons[i].RemoveFromClassList("selected");
+    //        }
+    //    }
+    //}
 
     public void PauseGame()
     {
@@ -78,6 +83,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.SetActive(true);
         isPaused = true;
         currentButtonIndex = 0;
+
         UIControllerInstance.musicPlayer.Pause(); 
 
     }
@@ -93,6 +99,7 @@ public class PauseMenu : MonoBehaviour
     public void OpenSettings()
     {
         Debug.Log("Openning Settings...");
+        settingMenu.SetActive(true);
     }
     public void ExitGame()
     {
