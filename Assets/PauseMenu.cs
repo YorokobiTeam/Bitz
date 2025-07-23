@@ -89,11 +89,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.SetActive(true);
         isPaused = true;
         currentButtonIndex = 0;
-        UIControllerInstance.musicPlayer.Pause(); // Pause the music player
-
-        //UpdateButtonSelection();
-        //uiDocument.rootVisualElement.style.display = DisplayStyle.Flex; // Show the pause menu
-        //// Maybe add disable spawning notes here and disable player's input?
+        UIControllerInstance.musicPlayer.Pause(); 
 
     }
 
@@ -103,7 +99,6 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.SetActive(false);
         isPaused = false;
         UIControllerInstance.musicPlayer.UnPause();
-        //uiDocument.rootVisualElement.style.display = DisplayStyle.None; // Hide the pause menu
     }
 
     public void OpenSettings()
@@ -113,7 +108,13 @@ public class PauseMenu : MonoBehaviour
     public void ExitGame()
     {
         Time.timeScale = 1f; 
-        SceneManager.LoadScene("MainMenu"); // Assuming you have a MainMenu scene
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f; 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     private int WrapIndex(int indx, int min, int max)
     {
