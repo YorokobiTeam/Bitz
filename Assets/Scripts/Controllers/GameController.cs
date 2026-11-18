@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
 
         hitAction = InputSystem.actions.FindAction("Hit");
         this.hitAction.performed += Hit;
-        this.hitAction.performed += (InputAction.CallbackContext callback) => this.hitSfx.Play();
+        this.hitAction.performed += PlayHitSound;
         this.gameData.score = 0;
         this.beatController.OnNotifyBeatHit += ProcessHitResult;
         this.beatController.OnNotifyBeatHit += UpdateGameDataCount;
@@ -48,6 +48,9 @@ public class GameController : MonoBehaviour
                 break;
             case GameState.Ingame:
                 this.beatController.StartBeats();
+                break;
+            case GameState.Ended:
+                BitzAds.PreloadInterstitial();
                 break;
         }
     }
@@ -80,8 +83,13 @@ public class GameController : MonoBehaviour
 
     public void Hit(InputAction.CallbackContext callback)
     {
+        if (BitzAds.IsShowing) return;
         this.beatController.TryHit(callback);
 
+    }
+    private void PlayHitSound(InputAction.CallbackContext callback)
+    {
+        if (!BitzAds.IsShowing) this.hitSfx.Play();
     }
     public TMP_Text hitComboText;
     private int comboCount;
@@ -123,12 +131,12 @@ public class GameController : MonoBehaviour
 
     public void Retry()
     {
-        SceneManager.LoadScene("BitzPlayer");
+        BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("BitzPlayer"));
     }
 
     public void BackHome()
     {
-        SceneManager.LoadScene("MainMenu");
+        BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("MainMenu"));
     }
 
 

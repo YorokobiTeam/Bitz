@@ -29,6 +29,7 @@ public class MainMenuController : MonoBehaviour
     private bool isLeft = true;
     private Button openFileButton;
     private List<MapMetadataObject> mapMetadataObjects;
+    private VisualElement privacyDialog;
 
 
     public AudioImporter audioImporter;
@@ -64,6 +65,8 @@ public class MainMenuController : MonoBehaviour
 
 
         buttons.AddRange(menuPanelRoot.Children());
+        ui.rootVisualElement.Q<Button>("AdPrivacy").clicked += ShowAdPrivacy;
+        if (!BitzAds.HasAdvertisingChoice) ShowAdPrivacy();
 
         this.openFileButton = menuPanelRoot.Q<Button>("OpenMap");
         openFileButton.clicked += OpenFileButton_clicked;
@@ -146,6 +149,7 @@ public class MainMenuController : MonoBehaviour
 
     private async void HandleNavigation(NavigationMoveEvent e)
     {
+        if (privacyDialog != null) return;
         bool shouldPlaySound = false;
 
         switch (e.direction)
@@ -213,6 +217,58 @@ public class MainMenuController : MonoBehaviour
         RelinkClasses();
 
 
+    }
+
+    private void ShowAdPrivacy()
+    {
+        if (privacyDialog != null) return;
+        root.SetEnabled(false);
+        privacyDialog = new VisualElement();
+        privacyDialog.style.position = Position.Absolute;
+        privacyDialog.style.left = 0;
+        privacyDialog.style.right = 0;
+        privacyDialog.style.top = 0;
+        privacyDialog.style.bottom = 0;
+        privacyDialog.style.backgroundColor = new Color(0, 0, 0, 0.85f);
+        privacyDialog.style.alignItems = Align.Center;
+        privacyDialog.style.justifyContent = Justify.Center;
+        privacyDialog.RegisterCallback<NavigationMoveEvent>(evt => evt.StopPropagation());
+
+        var panel = new VisualElement();
+        panel.style.width = Length.Percent(85);
+        panel.style.maxWidth = 620;
+        panel.style.paddingLeft = 24;
+        panel.style.paddingRight = 24;
+        panel.style.paddingTop = 24;
+        panel.style.paddingBottom = 24;
+        panel.style.backgroundColor = new Color(0.1f, 0.1f, 0.14f, 1);
+        var title = new Label("Sandbox ad privacy");
+        title.style.fontSize = 24;
+        title.style.color = Color.white;
+        title.style.whiteSpace = WhiteSpace.Normal;
+        var explanation = new Label("Bitz can request sandbox test ads from mGAds. Ad requests may include device and advertising information. You can continue without ads and change this choice here at any time.");
+        explanation.style.whiteSpace = WhiteSpace.Normal;
+        explanation.style.color = Color.white;
+        explanation.style.marginTop = 12;
+        explanation.style.marginBottom = 16;
+        panel.Add(title);
+        panel.Add(explanation);
+        var allow = new Button(() => SaveAdPrivacy(true)) { text = "Allow sandbox ads" };
+        var decline = new Button(() => SaveAdPrivacy(false)) { text = "Continue without ads" };
+        panel.Add(allow);
+        panel.Add(decline);
+        privacyDialog.Add(panel);
+        ui.rootVisualElement.Add(privacyDialog);
+        decline.Focus();
+    }
+
+    private void SaveAdPrivacy(bool allowed)
+    {
+        BitzAds.SetAdvertisingAllowed(allowed);
+        privacyDialog.RemoveFromHierarchy();
+        privacyDialog = null;
+        root.SetEnabled(true);
+        ui.rootVisualElement.Q<Button>("AdPrivacy").Focus();
     }
 
     private void RelinkClasses(InteractionSrc interactionSrc = InteractionSrc.None)

@@ -1,0 +1,23 @@
+# mGAds sandbox integration
+
+The project targets Unity **6000.0.50f1**. The manifest pins `com.yorokobi.mgads-sdk` at repository commit `ffc29a6cf3f4ae3413af4c3ac8cbea065bf93bf3`; its package metadata identifies version **0.3.0**. See the installed package's `Documentation/Readme.md` in Package Manager for the SDK API and platform requirements.
+
+## Configuration
+
+Copy `Assets/Resources/MGAdsConfig.example.json` to `Assets/Resources/MGAdsConfig.json` and provide the application's sandbox key and the matching active interstitial ad-unit UUID. The local configuration and its Unity metadata are git-ignored; it is embedded in builds and therefore is not a secret store. Leave `baseUrl` blank for the SDK default or set the deployment's HTTPS gateway. The supplied sandbox app ID is `d5ec8c05-7190-4ab6-9787-0c1c3b5b4b44` and the supplied interstitial UUID is `ab9fc666-5b51-4716-b5c7-4db5bd062d8d`; their association has not yet been verified by an ad request. Use sandbox credentials only. The integration does not load rewarded, banner or native ads because this game has no reward flow or designated placements for them.
+
+On first main-menu entry, Bitz asks whether the player allows sandbox ad requests. The saved choice defaults to no requests and can be changed through **Ad Privacy** on the main menu. Declining prevents initialization and future ad loads, invalidates pending loads and releases any prepared interstitial. A previously initialized SDK cannot be uninitialized, and events already queued by the SDK may still be sent. The choice is stored on the device in `PlayerPrefs` under `bitz.sandboxAdsChoice.v1`.
+
+This all-or-nothing sandbox choice is not an IAB CMP, does not generate TCF/GPP strings, and is not an ATT prompt. Before a production launch, the owner must provide the appropriate privacy notice, jurisdiction-specific CMP/consent handling and iOS ATT flow, and integrate actual choices with mGAds. The SDK reads CMP values and persistent SDK privacy overrides per field. Do not manufacture consent values. `editorMock` enables the SDK's offline Editor simulation instead of real initialization; set an arbitrary nonempty interstitial ID for that simulation. It does not simulate network, tracking or video timing, and is ignored in player builds.
+
+## Lifecycle
+
+`BitzAds` starts once before the first scene and initializes on the main thread when configured. Upon a song ending, it attempts one interstitial preload; retry and home show a ready, unexpired ad before navigating, or navigate immediately if none is ready. Loads completing after navigation are discarded. Close, failure and expiry release the ad; failures do not block play. There is no automatic no-fill retry. The SDK pauses and restores AudioListener audio during fullscreen playback. Bitz suppresses its hit, hit sound, button animation and pause input while the overlay is visible. Test UI Toolkit and target-device input behavior as well.
+
+## Measurement and rewards
+
+The supplied guide's wiki facts are a snapshot dated 2026-11-18, not live verification. It reports no proof of playback and no VIDEO/REWARDED impression events. The inspected pinned SDK README now describes an optional proof-of-playback session, with a server reward receipt when that session is present; without it the reward callback remains a client playback signal. The README also says VIDEO/REWARDED impressions are measured through proof of playback rather than sent as SDK impression events. Actual deployed behavior and authoritative server verification remain unverified; do not promise measurement or grant valuable rewards based solely on the client callback.
+
+## Verification and outstanding work
+
+The package metadata and API were inspected at the pinned commit. The sandbox key and interstitial UUID are stored in the ignored local configuration; production CMP/ATT integration, actual inventory and target devices remain outstanding. The owner confirmed the default gateway. A direct request using the SDK's verification contract returned an active sandbox key and the app ID above; this was not a Unity SDK initialization or a placement check. Unity 6000.0.50f1 resolved the pinned package and compiled the game in batch mode, exiting successfully. An initial compilation pass reported errors in Unity's 2D Pixel Perfect converter; subsequent compilation succeeded. SDK initialization success/failure, no-fill, network failure, fullscreen close/failure, audio restoration, input suppression, click-through, the privacy UI and device behavior require testing with the supplied configuration on each intended OS. HTML creatives require Android/iOS device testing. Record actual results here when available.

@@ -9,6 +9,7 @@
                 <ui:Button text="Browse&#10;" name="Browse" selectable="false" double-click-selects-word="false" triple-click-selects-line="false" class="main-menu-button menu-dist-0" />
                 <ui:Button text="Open Map" name="OpenMap" class="main-menu-button menu-dist-1" />
                 <ui:Button text="Options" name="Options" class="main-menu-button menu-dist-2" />
+                <ui:Button text="Ad Privacy" name="AdPrivacy" class="main-menu-button menu-dist-3" />
                 <ui:Button text="Exit" name="Exit" class="main-menu-button menu-dist-3" />
             </ui:VisualElement>
         </ui:VisualElement>
