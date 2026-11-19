@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -28,6 +29,7 @@ public class MainMenuController : MonoBehaviour
     private int rightPanelCurrentIndex = 0;
     private bool isLeft = true;
     private Button openFileButton;
+    private bool importingMap;
     private List<MapMetadataObject> mapMetadataObjects;
     private VisualElement privacyDialog;
 
@@ -72,7 +74,7 @@ public class MainMenuController : MonoBehaviour
         openFileButton.clicked += OpenFileButton_clicked;
 
         ui.rootVisualElement.RegisterCallback<NavigationMoveEvent>(HandleNavigation);
-        ReloadMaps();
+        await ReloadMaps();
         RelinkClasses();
         if (this.mapMetadataObjects.Count > 0)
         {
@@ -109,7 +111,7 @@ public class MainMenuController : MonoBehaviour
 
     }
 
-    public async void ReloadMaps()
+    public async Task ReloadMaps()
     {
         maps.Clear();
         rightPanelRoot.Clear();
@@ -133,16 +135,28 @@ public class MainMenuController : MonoBehaviour
 
     }
 
-    private void OpenFileButton_clicked()
+    private async void OpenFileButton_clicked()
     {
-        IProgress<string> progressReporter = new Progress<string>(callback =>
+        if (importingMap) return;
+        importingMap = true;
+        openFileButton.SetEnabled(false);
+        try
         {
-            Debug.Log(callback);
-        });
-        Debug.Log(this.audioImporter);
-        FileUtils.AddNewBitzmap(GetComponent<NAudioImporter>(), null);
-        ReloadMaps();
-        RelinkClasses();
+            if (await FileUtils.AddNewBitzmap(audioImporter, null))
+            {
+                await ReloadMaps();
+                RelinkClasses();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+        finally
+        {
+            importingMap = false;
+            openFileButton.SetEnabled(true);
+        }
     }
     [SerializeField, Range(0, 5f)]
     float backgroundFadeTime = 0.5f;
