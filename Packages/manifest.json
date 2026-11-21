@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.yorokobi.mgads-sdk": "https://github.com/YorokobiTeam/admob_platform.git?path=packages/com.yorokobi.mgads-sdk#ffc29a6cf3f4ae3413af4c3ac8cbea065bf93bf3",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.unity.collab-proxy": "2.8.2",

@@ -35,6 +35,7 @@ public class ButtonController : MonoBehaviour
 
 	private void OnButtonDown(InputAction.CallbackContext context)
 	{
+		if (BitzAds.IsShowing) return;
 		sr.sprite = pressed;
 	}
 

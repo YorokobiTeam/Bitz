@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,21 +12,30 @@ using UnityEngine.Networking;
 
 static class FileUtils
 {
-    public static string? OpenFilePicker()
+    public static Task<string?> OpenFilePicker()
     {
-        var fileDialog = new System.Windows.Forms.OpenFileDialog()
+        var completion = new TaskCompletionSource<string?>();
+        var dialogThread = new Thread(() =>
         {
-            Filter = "Bitz Map Files (*.bitzmap)|*.bitzmap",
-            Title = "Open the beatmap file."
-        };
-
-        if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-        {
-            Debug.Log(fileDialog.FileName);
-            return fileDialog.FileName;
-
-        }
-        return null;
+            try
+            {
+                using var fileDialog = new System.Windows.Forms.OpenFileDialog
+                {
+                    Filter = "Bitz Map Files (*.bitzmap)|*.bitzmap",
+                    Title = "Open the beatmap file."
+                };
+                completion.TrySetResult(fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK
+                    ? fileDialog.FileName : null);
+            }
+            catch (Exception ex)
+            {
+                completion.TrySetException(ex);
+            }
+        });
+        dialogThread.SetApartmentState(ApartmentState.STA);
+        dialogThread.IsBackground = true;
+        dialogThread.Start();
+        return completion.Task;
     }
     //public static void UnzipAllMaps(string path)
     //{
@@ -129,10 +139,12 @@ static class FileUtils
             return null;
         }
     }
-    public static void AddNewBitzmap(AudioImporter importer, IProgress<string>? progressCallback)
+    public static async Task<bool> AddNewBitzmap(AudioImporter importer, IProgress<string>? progressCallback)
     {
-        Debug.Log(importer);
-        AddNewBitzMap(OpenFilePicker(), importer, progressCallback);
+        var path = await OpenFilePicker();
+        if (string.IsNullOrEmpty(path)) return false;
+        await AddNewBitzMap(path, importer, progressCallback);
+        return true;
     }
 
     /// <summary>
@@ -140,7 +152,7 @@ static class FileUtils
     /// </summary>
     /// <param name="path">Path of the .bitzmap file</param>
     /// <param name="progressCallback">Progress callback messages</param>
-    public static async void AddNewBitzMap(string path, AudioImporter importer, IProgress<string>? progressCallback)
+    public static async Task AddNewBitzMap(string path, AudioImporter importer, IProgress<string>? progressCallback)
     {
         var tempFolder = Path.Join(Constants.APPLICATION_DATA, "temp");
         try
@@ -184,7 +196,7 @@ static class FileUtils
         }
         finally
         {
-            Directory.Delete(tempFolder, true);
+            if (Directory.Exists(tempFolder)) Directory.Delete(tempFolder, true);
         }
 
 
