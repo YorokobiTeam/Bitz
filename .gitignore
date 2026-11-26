@@ -80,6 +80,10 @@ crashlytics-build.properties
 # Local sandbox credentials
 /Assets/Resources/MGAdsConfig.json
 /Assets/Resources/MGAdsConfig.json.meta
+/Assets/Resources/BitzLocalServerConfig.json
+/Assets/Resources/BitzLocalServerConfig.json.meta
 /Assets/Resources/BitzLocalRewardCA.txt
 /Assets/Resources/BitzLocalRewardCA.txt.meta
 /Bitz_Mobile_Conversion_Handoff.md
+/Bitz_Server_Ads_Connection_Task.md
+/Bitz_Ads_Integration_Handoff.md

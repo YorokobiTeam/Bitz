@@ -1,7 +1,8 @@
 {
-  "sandboxSdkKey": "",
-  "interstitialAdUnitId": "",
-  "rewardedAdUnitId": "",
+  "sandboxSdkKey": "am_test_**********",
+  "bannerAdUnitId": "**********",
+  "interstitialAdUnitId": "**********",
+  "rewardedAdUnitId": "**********",
   "baseUrl": "",
   "editorMock": false
 }

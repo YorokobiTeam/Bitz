@@ -14,6 +14,11 @@ public interface IBitzReviveProvider
 public enum BitzReviveResult { Confirmed, Cancelled, Pending, Unavailable, Expired }
 public enum BitzReviveOption { UseLife, WatchAd, CheckPending, StartNew, Unavailable }
 public interface IBitzReviveOptions { void GetOption(Action<BitzReviveOption> completed); }
+public interface IBitzReviveStatusSource
+{
+    string LastStatusMessage { get; }
+    event Action<string> StatusChanged;
+}
 
 /// <summary>Gameplay HP is separate from the server's player lives.</summary>
 public sealed class BitzHealth : MonoBehaviour
@@ -27,6 +32,7 @@ public sealed class BitzHealth : MonoBehaviour
     public event Action Revived;
 
     private IBitzReviveProvider reviveProvider;
+    private IBitzReviveStatusSource statusSource;
     private Image barFill;
     private Text hpText;
     private Text statusText;
@@ -45,11 +51,26 @@ public sealed class BitzHealth : MonoBehaviour
         RefreshUi();
     }
 
+    private void OnDestroy()
+    {
+        if (statusSource != null) statusSource.StatusChanged -= HandleProviderStatus;
+        statusSource = null;
+    }
+
     public void SetReviveProvider(IBitzReviveProvider provider)
     {
+        if (statusSource != null) statusSource.StatusChanged -= HandleProviderStatus;
         reviveProvider = provider;
+        statusSource = provider as IBitzReviveStatusSource;
+        if (statusSource != null) statusSource.StatusChanged += HandleProviderStatus;
         if (IsDead && provider != null) RefreshOption();
         RefreshUi();
+    }
+
+    private void HandleProviderStatus(string message)
+    {
+        if (this == null || statusText == null || !IsDead || string.IsNullOrEmpty(message)) return;
+        statusText.text = message;
     }
 
     public void RegisterHit(HitResult hit)
@@ -80,8 +101,12 @@ public sealed class BitzHealth : MonoBehaviour
                     Revived?.Invoke();
                     return;
                 }
-                statusText.text = result == BitzReviveResult.Pending ? "Verification is still pending. Check again shortly." :
-                    result == BitzReviveResult.Cancelled ? "The ad was closed. Try again when ready." : "Revive is unavailable. Please try again later.";
+                var detail = statusSource?.LastStatusMessage;
+                statusText.text = !string.IsNullOrEmpty(detail) ? detail :
+                    result == BitzReviveResult.Pending ? "Verification is still pending. Check again shortly." :
+                    result == BitzReviveResult.Cancelled ? "The ad was closed. Try again when ready." :
+                    result == BitzReviveResult.Expired ? "This revive attempt expired. Try again." :
+                    "Revive is unavailable. Please try again later.";
                 if (result == BitzReviveResult.Pending) reviveButtonText.text = "Check revive status";
                 else if (result == BitzReviveResult.Cancelled || result == BitzReviveResult.Expired) RefreshOption();
                 RefreshUi();
@@ -100,16 +125,28 @@ public sealed class BitzHealth : MonoBehaviour
         if (!IsDead || reviveProvider == null || !(reviveProvider is IBitzReviveOptions options)) return;
         optionLoading = true; statusText.text = "Checking lives..."; RefreshUi();
         var expectedProvider = reviveProvider;
-        options.GetOption(option =>
+        try
         {
-            if (this == null || !IsDead || reviveProvider != expectedProvider) return;
+            options.GetOption(option =>
+            {
+                if (this == null || !IsDead || reviveProvider != expectedProvider) return;
+                optionLoading = false;
+                reviveButtonText.text = option == BitzReviveOption.UseLife ? "Use one life" : option == BitzReviveOption.CheckPending ? "Check revive status" : option == BitzReviveOption.StartNew ? "Start a new ad" : "Watch ad to revive";
+                var detail = statusSource?.LastStatusMessage;
+                statusText.text = !string.IsNullOrEmpty(detail) ? detail :
+                    option == BitzReviveOption.UseLife ? "Use one life to continue." :
+                    option == BitzReviveOption.CheckPending ? "Check the status of your revive." :
+                    option == BitzReviveOption.StartNew ? "This attempt expired. Starting a new one may cancel a late reward." :
+                    option == BitzReviveOption.WatchAd ? "Watch a rewarded ad to revive." : "Unable to check lives. Please try again.";
+                RefreshUi();
+            });
+        }
+        catch (Exception)
+        {
             optionLoading = false;
-            reviveButtonText.text = option == BitzReviveOption.UseLife ? "Use one life" : option == BitzReviveOption.CheckPending ? "Check revive status" : option == BitzReviveOption.StartNew ? "Start a new ad" : "Watch ad to revive";
-            statusText.text = option == BitzReviveOption.UseLife ? "Use one life to continue." : option == BitzReviveOption.CheckPending ? "Check the status of your revive." :
-                option == BitzReviveOption.StartNew ? "This attempt expired. Starting a new one may cancel a late reward." :
-                option == BitzReviveOption.WatchAd ? "Watch a rewarded ad to revive." : "Unable to check lives. Please try again.";
+            statusText.text = "Unable to check lives. Please try again.";
             RefreshUi();
-        });
+        }
     }
 
     private void RefreshUi()

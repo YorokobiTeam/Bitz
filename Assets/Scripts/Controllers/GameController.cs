@@ -29,10 +29,27 @@ public class GameController : MonoBehaviour
         health.Died += HandleDeath;
         health.Revived += HandleRevive;
         rewardGateway = BitzMagicRewardGateway.CreateIfConfigured();
-        if (rewardGateway != null)
+        IBitzRewardGateway activeGateway = null;
+        if (rewardGateway != null && !string.IsNullOrWhiteSpace(rewardGateway.CurrentPlayerId))
+        {
+            activeGateway = rewardGateway;
+        }
+        else
+        {
+            if (rewardGateway != null)
+            {
+                rewardGateway.Dispose();
+                rewardGateway = null;
+            }
+            if (BitzLocalServerClient.Shared != null)
+            {
+                activeGateway = new BitzDemoRewardGateway(BitzLocalServerClient.Shared);
+            }
+        }
+        if (activeGateway != null)
         {
             var provider = gameObject.AddComponent<BitzRewardedReviveProvider>();
-            provider.Configure(rewardGateway);
+            provider.Configure(activeGateway);
             health.SetReviveProvider(provider);
         }
     }

@@ -1,0 +1,4 @@
+{
+  "serverUrl": "https://hosted-bitz-server.example.com",
+  "allowSimulatedConfirmation": true
+}
