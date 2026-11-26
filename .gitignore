@@ -79,3 +79,5 @@ crashlytics-build.properties
 # Local sandbox credentials
 /Assets/Resources/MGAdsConfig.json
 /Assets/Resources/MGAdsConfig.json.meta
+/Assets/Resources/BitzLocalRewardCA.txt
+/Assets/Resources/BitzLocalRewardCA.txt.meta

@@ -28,7 +28,7 @@ public class BitzMap : BaseModel
     [Column("song_author"), JsonPropertyName("song_author")]
     public string SongAuthor { get; set; }
 
-    [Column("difficulty"), JsonPropertyName("song_author")]
+    [Column("difficulty"), JsonPropertyName("difficulty")]
     public string Difficulty { get; set; }
 
     [JsonPropertyName("is_offline")]

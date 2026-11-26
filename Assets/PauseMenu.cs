@@ -31,6 +31,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape) && !settingMenu.activeSelf)
         {
+            var health = FindFirstObjectByType<BitzHealth>();
+            if (health != null && health.IsDead) return;
             if (isPaused)
             {
                 ResumeGame();
@@ -79,6 +81,8 @@ public class PauseMenu : MonoBehaviour
 
     public void PauseGame()
     {
+        var health = FindFirstObjectByType<BitzHealth>();
+        if (health != null && health.IsDead) return;
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
         isPaused = true;
@@ -90,6 +94,8 @@ public class PauseMenu : MonoBehaviour
 
     public void ResumeGame()
     {
+        var health = FindFirstObjectByType<BitzHealth>();
+        if (health != null && health.IsDead) return;
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
         isPaused = false;

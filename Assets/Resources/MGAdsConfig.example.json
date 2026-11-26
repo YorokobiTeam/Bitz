@@ -1,6 +1,7 @@
 {
   "sandboxSdkKey": "",
   "interstitialAdUnitId": "",
+  "rewardedAdUnitId": "",
   "baseUrl": "",
   "editorMock": false
 }
