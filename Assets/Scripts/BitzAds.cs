@@ -240,7 +240,14 @@ public sealed class BitzAds : MonoBehaviour
         }
 #endif
         if (string.IsNullOrWhiteSpace(settings.sandboxSdkKey)) { diagnosticStatus = "Sandbox SDK key is missing."; return; }
-        var sdkConfig = new MGAdsConfig { Environment = MGAdsEnvironment.Sandbox, LogLevel = MGAdsLogLevel.Info };
+        var sdkConfig = new MGAdsConfig
+        {
+            Environment = MGAdsEnvironment.Sandbox,
+            LogLevel = MGAdsLogLevel.Info,
+            TimeoutSeconds = 5,
+            MaxRetries = 5,
+            RetryBackoffMs = 300
+        };
         if (!string.IsNullOrWhiteSpace(settings.baseUrl)) sdkConfig.BaseUrl = settings.baseUrl.Trim();
         initializing = true;
         diagnosticStatus = "Initializing sandbox ads.";

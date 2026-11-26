@@ -73,6 +73,8 @@ public sealed class BitzDemoRewardGateway : IBitzRewardGateway, IBitzAutoSignInG
         if (result == null) return OfflineReply();
         if (!result.success || string.IsNullOrWhiteSpace(result.attemptId))
             return ErrorReply(result);
+        if (string.Equals(result.code, "simulated_reward_granted", StringComparison.OrdinalIgnoreCase))
+            return new BitzRewardReply { Code = "Completed", AttemptId = result.attemptId, Lives = result.lives, Message = result.message };
 
         var appId = !string.IsNullOrWhiteSpace(result.appId) ? result.appId : BitzAds.VerifiedAppId;
         var adUnitId = !string.IsNullOrWhiteSpace(result.adUnitId) ? result.adUnitId : BitzAds.ConfiguredRewardedAdUnitId;
@@ -133,11 +135,16 @@ public sealed class BitzDemoRewardGateway : IBitzRewardGateway, IBitzAutoSignInG
     {
         if (result == null) return OfflineReply();
         if (string.Equals(result.code, "unauthorized", StringComparison.OrdinalIgnoreCase))
-            return new BitzRewardReply { Code = "Unauthorized" };
-        if (string.Equals(result.code, "expired", StringComparison.OrdinalIgnoreCase))
-            return new BitzRewardReply { Code = "Expired", AttemptExpired = true };
-        if (string.Equals(result.code, "conflict", StringComparison.OrdinalIgnoreCase))
-            return new BitzRewardReply { Code = "Conflict" };
-        return new BitzRewardReply { Code = "Unavailable" };
+            return new BitzRewardReply { Code = "Unauthorized", Message = result.message };
+        if (string.Equals(result.code, "expired", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(result.code, "attempt_expired", StringComparison.OrdinalIgnoreCase))
+            return new BitzRewardReply { Code = "Expired", AttemptExpired = true, Message = result.message };
+        if (string.Equals(result.code, "conflict", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(result.code, "request_conflict", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(result.code, "revive_pending", StringComparison.OrdinalIgnoreCase))
+            return new BitzRewardReply { Code = "Conflict", Message = result.message };
+        if (string.Equals(result.code, "cooldown", StringComparison.OrdinalIgnoreCase))
+            return new BitzRewardReply { Code = "Cooldown", Message = result.message };
+        return new BitzRewardReply { Code = "Unavailable", Message = result.message };
     }
 }

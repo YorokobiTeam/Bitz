@@ -57,13 +57,17 @@ public class GameController : MonoBehaviour
     private void HandleDeath()
     {
         beatController.PauseBeats();
+        beatController.ClearMissedBeats();
         uiController.musicPlayer.Pause();
+        BitzAds.PreloadInterstitial();
     }
 
     private void HandleRevive()
     {
+        beatController.ClearMissedBeats();
         uiController.musicPlayer.UnPause();
         beatController.StartBeats();
+        BitzAds.PreloadInterstitial();
     }
 
     public void Start()
@@ -84,6 +88,7 @@ public class GameController : MonoBehaviour
         uiController.OnUpdateGameState += HandleGameStateUpdate;
         retryButton.onClick.AddListener(Retry);
         backHomeButton.onClick.AddListener(BackHome);
+        BitzAds.PreloadInterstitial();
     }
 
     private void HandleHealthHit(HitResult hitResult, float _) => health.RegisterHit(hitResult);

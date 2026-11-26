@@ -16,6 +16,7 @@ public interface IBitzRewardGateway
 public sealed class BitzRewardReply
 {
     public string Code;
+    public string Message;
     public string AttemptId;
     public string CustomData;
     public string AppId;
@@ -226,15 +227,36 @@ public sealed class BitzRewardedReviveProvider : MonoBehaviour, IBitzReviveProvi
         if (!Guid.TryParse(request, out _)) { request = Guid.NewGuid().ToString(); PlayerPrefs.SetString(key + "request", request); PlayerPrefs.Save(); }
         var prepared = await gateway.PrepareAsync(request);
         if (gateway.CurrentPlayerId != owner) return BitzReviveResult.Unavailable;
+        if (prepared?.Code == "Expired")
+        {
+            // A previous prepare request expired (e.g., from an earlier Play session); clear and create a fresh one once.
+            Clear(key);
+            request = Guid.NewGuid().ToString();
+            PlayerPrefs.SetString(key + "request", request);
+            PlayerPrefs.Save();
+            prepared = await gateway.PrepareAsync(request);
+            if (gateway.CurrentPlayerId != owner) return BitzReviveResult.Unavailable;
+        }
         if (prepared?.Code == "Completed" && !string.IsNullOrEmpty(prepared.AttemptId))
             return await CheckStatus(owner, key, prepared.AttemptId);
         if (prepared?.Code == "Expired" || prepared?.Code == "Superseded" || prepared?.Code == "Conflict")
-        { Clear(key); ReportStatus("Revive attempt expired. Please try again."); return BitzReviveResult.Unavailable; }
-        if (prepared?.Code != "Prepared" || string.IsNullOrWhiteSpace(prepared.AttemptId) ||
-            string.IsNullOrWhiteSpace(prepared.CustomData) || string.IsNullOrWhiteSpace(prepared.AppId) || string.IsNullOrWhiteSpace(prepared.AdUnitId))
+        {
+            Clear(key);
+            ReportStatus(!string.IsNullOrWhiteSpace(prepared.Message) ? prepared.Message : "Revive attempt expired. Please try again.");
+            return BitzReviveResult.Unavailable;
+        }
+        if (prepared?.Code != "Prepared")
         {
             if (prepared?.Code == "Pending") return BitzReviveResult.Pending;
-            ReportStatus(string.IsNullOrWhiteSpace(prepared?.AdUnitId) || string.IsNullOrWhiteSpace(prepared?.AppId)
+            ReportStatus(!string.IsNullOrWhiteSpace(prepared?.Message)
+                ? prepared.Message
+                : "Unable to prepare revive on the game server.");
+            return BitzReviveResult.Unavailable;
+        }
+        if (string.IsNullOrWhiteSpace(prepared.AttemptId) || string.IsNullOrWhiteSpace(prepared.CustomData) ||
+            string.IsNullOrWhiteSpace(prepared.AppId) || string.IsNullOrWhiteSpace(prepared.AdUnitId))
+        {
+            ReportStatus(string.IsNullOrWhiteSpace(prepared.AdUnitId) || string.IsNullOrWhiteSpace(prepared.AppId)
                 ? "Rewarded ad is not configured or SDK is not ready."
                 : "Unable to prepare revive on the game server.");
             return BitzReviveResult.Unavailable;

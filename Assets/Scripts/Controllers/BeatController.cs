@@ -9,6 +9,7 @@ public class BeatController : MonoBehaviour
     public BeatPrefab beatPrefab;
     public BeatmapData mapData;
     private readonly Queue<BeatPrefab> activeBeatObjects = new();
+    private readonly List<BeatPrefab> missedBeatObjects = new();
     private bool beatsRunning;
     public GameObject hitboxObject;
     public GameData gameData;
@@ -54,6 +55,12 @@ public class BeatController : MonoBehaviour
         beatsRunning = true;
         foreach (BeatPrefab beat in this.activeBeatObjects)
         {
+            if (beat != null && beat.rb != null)
+                beat.rb.linearVelocityX = -gameData.beatmapData.speed;
+        }
+        PruneMissedBeats();
+        foreach (BeatPrefab beat in this.missedBeatObjects)
+        {
             beat.rb.linearVelocityX = -gameData.beatmapData.speed;
         }
     }
@@ -80,7 +87,31 @@ public class BeatController : MonoBehaviour
         beatsRunning = false;
         foreach (BeatPrefab beat in this.activeBeatObjects)
         {
-            beat.rb.linearVelocityX = 0;
+            if (beat != null && beat.rb != null)
+                beat.rb.linearVelocityX = 0f;
+        }
+        PruneMissedBeats();
+        foreach (BeatPrefab beat in this.missedBeatObjects)
+        {
+            beat.rb.linearVelocityX = 0f;
+        }
+    }
+
+    public void ClearMissedBeats()
+    {
+        foreach (BeatPrefab beat in this.missedBeatObjects)
+        {
+            if (beat != null) Destroy(beat.gameObject);
+        }
+        this.missedBeatObjects.Clear();
+    }
+
+    private void PruneMissedBeats()
+    {
+        for (int i = this.missedBeatObjects.Count - 1; i >= 0; i--)
+        {
+            if (this.missedBeatObjects[i] == null || this.missedBeatObjects[i].rb == null)
+                this.missedBeatObjects.RemoveAt(i);
         }
     }
 
@@ -191,17 +222,22 @@ public class BeatController : MonoBehaviour
 
     private void MissBeat()
     {
-        if (this.activeBeatObjects.Peek() != null)
+        if (this.activeBeatObjects.Count == 0) return;
+
+        // Dequeue before notifying so death/pause handlers never freeze a missed beat
+        // outside activeBeatObjects and SetHitboxOrientation immediately targets the next note.
+        var missed = this.activeBeatObjects.Dequeue();
+        if (missed == null)
         {
-            NotifyBeatHit(
-                HitResult.Missed,
-                Mathf.Abs(
-                    this.activeBeatObjects.Peek().transform.position.x
-                        - this.hitboxObject.transform.position.x
-                )
-            );
-            this.activeBeatObjects.Dequeue();
+            SetHitboxOrientation();
+            return;
         }
+
+        var distance = Mathf.Abs(
+            missed.transform.position.x - this.hitboxObject.transform.position.x
+        );
+        this.missedBeatObjects.Add(missed);
+        NotifyBeatHit(HitResult.Missed, distance);
     }
 }
 

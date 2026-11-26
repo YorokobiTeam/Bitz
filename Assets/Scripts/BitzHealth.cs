@@ -38,8 +38,10 @@ public sealed class BitzHealth : MonoBehaviour
     private Text statusText;
     private GameObject deathPanel;
     private Button reviveButton;
+    private Button backToMenuButton;
     private Text reviveButtonText;
     private bool reviveInProgress;
+    private bool leavingToMenu;
     private bool optionLoading;
 
     private void Awake()
@@ -109,6 +111,7 @@ public sealed class BitzHealth : MonoBehaviour
                     "Revive is unavailable. Please try again later.";
                 if (result == BitzReviveResult.Pending) reviveButtonText.text = "Check revive status";
                 else if (result == BitzReviveResult.Cancelled || result == BitzReviveResult.Expired) RefreshOption();
+                BitzAds.PreloadInterstitial();
                 RefreshUi();
             });
         }
@@ -158,7 +161,8 @@ public sealed class BitzHealth : MonoBehaviour
         barFill.color = Color.Lerp(new Color(0.94f, 0.23f, 0.25f), new Color(0.26f, 0.86f, 0.54f), fraction);
         hpText.text = $"HP {Current} / {maxHealth}";
         deathPanel.SetActive(IsDead);
-        reviveButton.interactable = IsDead && reviveProvider != null && !reviveInProgress && !optionLoading;
+        reviveButton.interactable = IsDead && !leavingToMenu && reviveProvider != null && !reviveInProgress && !optionLoading;
+        if (backToMenuButton != null) backToMenuButton.interactable = IsDead && !leavingToMenu && !reviveInProgress && !BitzAds.IsShowing;
         if (IsDead && reviveProvider == null) statusText.text = "Ad revive is not connected yet.";
     }
 
@@ -188,7 +192,16 @@ public sealed class BitzHealth : MonoBehaviour
         SetRect(statusText.rectTransform, new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(0, 30), new Vector2(530, 80), new Vector2(.5f, .5f));
         reviveButton = MakeButton("Watch ad to revive", panel.transform, new Vector2(0, -62), RequestRevive);
         reviveButtonText = reviveButton.GetComponentInChildren<Text>();
-        MakeButton("Back to menu", panel.transform, new Vector2(0, -138), () => { Time.timeScale = 1; SceneManager.LoadScene("MainMenu"); });
+        backToMenuButton = MakeButton("Back to menu", panel.transform, new Vector2(0, -138), ReturnToMenu);
+    }
+
+    private void ReturnToMenu()
+    {
+        if (leavingToMenu || reviveInProgress || BitzAds.IsShowing) return;
+        leavingToMenu = true;
+        RefreshUi();
+        Time.timeScale = 1f;
+        BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("MainMenu"));
     }
 
     private static Image MakeImage(string name, Transform parent, Color color)

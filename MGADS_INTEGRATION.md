@@ -55,7 +55,7 @@ This all-or-nothing sandbox choice is not an IAB CMP, does not generate TCF/GPP 
 `BitzAds` starts once before the first scene (`DontDestroyOnLoad`) and initializes on the main thread when allowed and configured:
 
 - **Banner (`BannerAdView`):** Automatically loads and anchors to the bottom of `MainMenu` when `bannerAdUnitId` is configured. Automatically destroyed when entering `BitzPlayer` so gameplay lanes and touch pads are never covered. Supports both image creatives and Android/iOS HTML creatives (`MarkupWebView`).
-- **Interstitial (`InterstitialAd`):** Preloads once when a song ends (`GameState.Ended`). Tapping **Retry** or **Back to Home** shows an unexpired prepared ad before navigating, or navigates immediately if none is ready. Loads completing after navigation are discarded.
+- **Interstitial (`InterstitialAd`):** Preloads when a song starts, on death, after a revive, and when a song ends (`GameState.Ended`). Tapping **Back to menu** on the death panel or **Retry** / **Back to Home** on the end screen shows an unexpired prepared ad before navigating, or navigates immediately if none is ready. Loads completing after navigation are discarded.
 - **Rewarded (`RewardedAd` + `BitzRewardedReviveProvider` + `BitzHealth`):**
   - Rewarded ads are **not** preloaded at startup because `AdRequest.RewardVerificationCustomData` is bound per server-prepared reward attempt.
   - When HP reaches 0, `BitzHealth` queries the server for lives (`Use one life` when lives > 0, or `Watch ad to revive` when lives == 0) and resolves promptly if offline.
