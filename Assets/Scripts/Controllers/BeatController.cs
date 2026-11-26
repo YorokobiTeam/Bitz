@@ -101,36 +101,35 @@ public class BeatController : MonoBehaviour
     }
 
     public void TryHit(InputAction.CallbackContext callback)
-    {
-        var beat = this.activeBeatObjects.Peek();
-        var inputDirection = callback.ReadValue<Vector2>();
+    => TryHit(ToDirection(callback.ReadValue<Vector2>()));
 
-        var diff = beat.transform.position.x - this.hitboxObject.transform.position.x;
-        var dist = Mathf.Abs(diff);
-        var hitResult = this.GetHitResult(diff, dist);
+    public void TryHit(BeatDirection? beatDirection)
+    {
+        if (activeBeatObjects.Count == 0) return;
+
+        var beat = activeBeatObjects.Peek();
+        var diff = beat.transform.position.x - hitboxObject.transform.position.x;
+        var hitResult = GetHitResult(diff, Mathf.Abs(diff));
+
         if (hitResult != HitResult.Ignored)
         {
-            BeatDirection? beatDirection = null;
-            if (inputDirection.x > 0)
-                beatDirection = BeatDirection.Right;
-            if (inputDirection.x < 0)
-                beatDirection = BeatDirection.Left;
-            if (inputDirection.y > 0)
-                beatDirection = BeatDirection.Up;
-            if (inputDirection.y < 0)
-                beatDirection = BeatDirection.Down;
-            Debug.Log(inputDirection);
-            Debug.Log(beat.data.beatDirection);
-            if (beatDirection is null || !(beatDirection == (beat.data.beatDirection)))
-            {
+            if (beatDirection is null || beatDirection != beat.data.beatDirection)
                 hitResult = HitResult.Missed;
-            }
-            DestroyBeat(this.activeBeatObjects.Dequeue(), DestructionReason.Hit);
+            DestroyBeat(activeBeatObjects.Dequeue(), DestructionReason.Hit);
         }
 
-        this.NotifyBeatHit(hitResult, diff);
+        NotifyBeatHit(hitResult, diff);
     }
 
+    static BeatDirection? ToDirection(Vector2 v)
+    {
+        BeatDirection? d = null;
+        if (v.x > 0) d = BeatDirection.Right;
+        if (v.x < 0) d = BeatDirection.Left;
+        if (v.y > 0) d = BeatDirection.Up;
+        if (v.y < 0) d = BeatDirection.Down;
+        return d;
+    }
     public HitResult GetHitResult(float diff, float dist)
     {
         if (diff >= 0)

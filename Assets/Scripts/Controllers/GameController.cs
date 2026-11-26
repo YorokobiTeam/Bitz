@@ -83,13 +83,12 @@ public class GameController : MonoBehaviour
 
     public void Hit(InputAction.CallbackContext callback)
     {
-        if (BitzAds.IsShowing) return;
-        this.beatController.TryHit(callback);
-
+        if (BitzAds.IsShowing || Time.timeScale == 0f) return;
+        beatController.TryHit(callback);
     }
     private void PlayHitSound(InputAction.CallbackContext callback)
     {
-        if (!BitzAds.IsShowing) this.hitSfx.Play();
+        if (!BitzAds.IsShowing && Time.timeScale != 0f) hitSfx.Play();
     }
     public TMP_Text hitComboText;
     private int comboCount;
@@ -129,6 +128,13 @@ public class GameController : MonoBehaviour
         this.scoreText.text = UIUtils.GetScoreText(this.gameData.score, 9);
     }
 
+    public void HitDirection(BeatDirection dir)
+    {
+        if (BitzAds.IsShowing || Time.timeScale == 0f) return;
+        hitSfx.Play();
+        beatController.TryHit(dir);
+    }
+
     public void Retry()
     {
         BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("BitzPlayer"));
@@ -139,5 +145,11 @@ public class GameController : MonoBehaviour
         BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("MainMenu"));
     }
 
+    void OnDestroy()
+    {
+        if (hitAction == null) return;
+        hitAction.performed -= Hit;
+        hitAction.performed -= PlayHitSound;
+    }
 
 }

@@ -1,91 +1,44 @@
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenu;
     public GameObject settingMenu;
-
     public UIController UIControllerInstance;
+    public static bool isPaused;
 
-    public static bool isPaused = false;
-
-    private List<Button> menuButtons = new List<Button>();
-    private int currentButtonIndex = 0;
-
-    private void Awake()
+    void Awake()
     {
-        pauseMenu.SetActive(false);
-        settingMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1f;
+        if (pauseMenu) pauseMenu.SetActive(false);
+        if (settingMenu) settingMenu.SetActive(false);
     }
 
-    public void Start()
+    void Update()
     {
-        pauseMenu.SetActive(false);
-        settingMenu.SetActive(false);
+        if (BitzAds.IsShowing) return;
+        var kb = Keyboard.current; // Android Back usually arrives as Escape; verify on device
+        if (kb != null && kb.escapeKey.wasPressedThisFrame && !settingMenu.activeSelf) TogglePause();
     }
 
-    private void Update()
+    public void TogglePause() { if (isPaused) ResumeGame(); else PauseGame(); }
+
+    void OnApplicationPause(bool paused)
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !settingMenu.activeSelf)
-        {
-            if (isPaused)
-            {
-                ResumeGame();
-            }
-            else
-            {
-                PauseGame();
-            }
-        }
-
+        if (!paused || isPaused || BitzAds.IsShowing) return;
+        if (UIControllerInstance.gameEndScreen.activeSelf) return;
+        if (UIControllerInstance.gameData.gameState == GameState.Ingame) PauseGame();
     }
-
-    //private void OnNavigate(NavigationMoveEvent evt)
-    //{
-    //    if (!isPaused) return;
-
-    //    switch (evt.direction)
-    //    {
-    //        case NavigationMoveEvent.Direction.Up:
-    //            currentButtonIndex = WrapIndex(--currentButtonIndex, 0, menuButtons.Count - 1);
-    //            break;
-    //        case NavigationMoveEvent.Direction.Down:
-    //            currentButtonIndex = WrapIndex(++currentButtonIndex, 0, menuButtons.Count - 1);
-    //            break;
-    //        case NavigationMoveEvent.Direction.None:
-    //            break;
-    //    }
-    //    menuButtons[currentButtonIndex].Focus();
-    //    UpdateButtonSelection();
-    //}
-    //private void UpdateButtonSelection()
-    //{
-    //    for (int i = 0; i < menuButtons.Count; i++)
-    //    {
-    //        if (i == currentButtonIndex)
-    //        {
-    //            menuButtons[i].AddToClassList("selected");
-    //            menuButtons[i].Focus();
-    //        }
-    //        else
-    //        {
-    //            menuButtons[i].RemoveFromClassList("selected");
-    //        }
-    //    }
-    //}
 
     public void PauseGame()
     {
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
         isPaused = true;
-        currentButtonIndex = 0;
-
-        UIControllerInstance.musicPlayer.Pause(); 
-
+        UIControllerInstance.musicPlayer.Pause();
     }
 
     public void ResumeGame()
@@ -96,25 +49,7 @@ public class PauseMenu : MonoBehaviour
         UIControllerInstance.musicPlayer.UnPause();
     }
 
-    public void OpenSettings()
-    {
-        Debug.Log("Openning Settings...");
-        settingMenu.SetActive(true);
-    }
-    public void ExitGame()
-    {
-        Time.timeScale = 1f; 
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    public void RestartGame()
-    {
-        Time.timeScale = 1f; 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-    private int WrapIndex(int indx, int min, int max)
-    {
-        int range = max - min + 1;
-        return ((indx - min) % range + range) % range + min;
-    }
+    public void OpenSettings() => settingMenu.SetActive(true);
+    public void ExitGame() { Time.timeScale = 1f; SceneManager.LoadScene("MainMenu"); }
+    public void RestartGame() { Time.timeScale = 1f; SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
 }
