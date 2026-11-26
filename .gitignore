@@ -12,6 +12,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/UIElementsSchema/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -79,3 +80,6 @@ crashlytics-build.properties
 # Local sandbox credentials
 /Assets/Resources/MGAdsConfig.json
 /Assets/Resources/MGAdsConfig.json.meta
+/Assets/Resources/BitzLocalRewardCA.txt
+/Assets/Resources/BitzLocalRewardCA.txt.meta
+/Bitz_Mobile_Conversion_Handoff.md
