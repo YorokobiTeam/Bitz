@@ -1,11 +1,25 @@
 {
   "dependencies": {
+    "com.cysharp.magiconion.client.unity": {
+      "version": "https://github.com/Cysharp/MagicOnion.git?path=src/MagicOnion.Client.Unity/Assets/Scripts/MagicOnion.Client.Unity#7.10.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "8aa0e001c88ead7ffcf1d453386f9e4bb05905ae"
+    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "f213ff497e4ff462a77319cf677cf20cc0860ca9"
+    },
+    "com.cysharp.yetanotherhttphandler": {
+      "version": "https://github.com/Cysharp/YetAnotherHttpHandler.git?path=src/YetAnotherHttpHandler#1.10.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0eede4bf5bbbf7d6eb9cb63739c05bd69a6beaba"
     },
     "com.github-glitchenzo.nugetforunity": {
       "version": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
@@ -314,6 +328,13 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.yorokobi.mgads-sdk": {
+      "version": "https://github.com/YorokobiTeam/admob_platform.git?path=packages/com.yorokobi.mgads-sdk#ffc29a6cf3f4ae3413af4c3ac8cbea065bf93bf3",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ffc29a6cf3f4ae3413af4c3ac8cbea065bf93bf3"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

@@ -15,6 +15,7 @@ public class PauseMenuController : MonoBehaviour
 
     private void Update()
     {
+        if (BitzAds.IsShowing) return;
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)

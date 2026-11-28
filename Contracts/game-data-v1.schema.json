@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bitz.invalid/contracts/game-data-v1.schema.json",
+  "title": "Bitz game data DTOs v1",
+  "$defs": {
+    "Map": {
+      "type": "object",
+      "properties": {
+        "map_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "music_file_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "background_file_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "cover_file_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "map_author_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "song_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "song_author": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "difficulty": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "map_id",
+        "music_file_id",
+        "background_file_id",
+        "cover_file_id",
+        "map_author_id",
+        "song_name",
+        "song_author",
+        "difficulty"
+      ],
+      "additionalProperties": true
+    },
+    "PlayerInfo": {
+      "type": "object",
+      "properties": {
+        "player_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "username": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "experience": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "pfp_file_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "player_id",
+        "username",
+        "experience",
+        "pfp_file_id"
+      ],
+      "additionalProperties": true
+    },
+    "PlayerSetting": {
+      "type": "object",
+      "properties": {
+        "player_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "menu_background_img_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "timeline_background_img_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "up_arrow_color": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "down_arrow_color": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "left_arrow_color": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "right_arrow_color": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "player_id",
+        "menu_background_img_id",
+        "timeline_background_img_id",
+        "up_arrow_color",
+        "down_arrow_color",
+        "left_arrow_color",
+        "right_arrow_color"
+      ],
+      "additionalProperties": true
+    },
+    "MapScore": {
+      "type": "object",
+      "properties": {
+        "player_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "map_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "score": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "player_id",
+        "map_id",
+        "score"
+      ],
+      "additionalProperties": true
+    }
+  }
+}

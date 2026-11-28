@@ -9,6 +9,7 @@ public class BeatController : MonoBehaviour
     public BeatPrefab beatPrefab;
     public BeatmapData mapData;
     private readonly Queue<BeatPrefab> activeBeatObjects = new();
+    private bool beatsRunning;
     public GameObject hitboxObject;
     public GameData gameData;
     public GameObject pointsBox;
@@ -50,6 +51,7 @@ public class BeatController : MonoBehaviour
 
     public void StartBeats()
     {
+        beatsRunning = true;
         foreach (BeatPrefab beat in this.activeBeatObjects)
         {
             beat.rb.linearVelocityX = -gameData.beatmapData.speed;
@@ -58,10 +60,11 @@ public class BeatController : MonoBehaviour
 
     public void SetHitboxOrientation()
     {
+        if (!activeBeatObjects.TryPeek(out var next) || next == null) return;
         this.hitboxObject.transform.eulerAngles = new Vector3(
             0,
             0,
-            this.activeBeatObjects.Peek().data.beatDirection switch
+            next.data.beatDirection switch
             {
                 BeatDirection.Up => 90f,
                 BeatDirection.Down => -90f,
@@ -74,6 +77,7 @@ public class BeatController : MonoBehaviour
 
     public void PauseBeats()
     {
+        beatsRunning = false;
         foreach (BeatPrefab beat in this.activeBeatObjects)
         {
             beat.rb.linearVelocityX = 0;
@@ -102,6 +106,7 @@ public class BeatController : MonoBehaviour
 
     public void TryHit(InputAction.CallbackContext callback)
     {
+        if (!beatsRunning || activeBeatObjects.Count == 0) return;
         var beat = this.activeBeatObjects.Peek();
         var inputDirection = callback.ReadValue<Vector2>();
 
@@ -164,6 +169,7 @@ public class BeatController : MonoBehaviour
 
     public void Update()
     {
+        if (!beatsRunning) return;
         activeBeatObjects.TryPeek(out BeatPrefab frontOfQueue);
         if (frontOfQueue != null)
         {

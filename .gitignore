@@ -12,6 +12,13 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/UIElementsSchema/
+
+# NuGetForUnity restores these packages from Assets/packages.config
+/Assets/Packages/
+
+# Local metadata for editor smoke tests
+/Assets/Editor/*SmokeTest.cs.meta
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -75,3 +82,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+
+# Local sandbox credentials
+/Assets/Resources/MGAdsConfig.json
+/Assets/Resources/MGAdsConfig.json.meta
+/Assets/Resources/BitzLocalRewardCA.txt
+/Assets/Resources/BitzLocalRewardCA.txt.meta

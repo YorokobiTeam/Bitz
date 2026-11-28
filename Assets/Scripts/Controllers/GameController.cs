@@ -19,6 +19,35 @@ public class GameController : MonoBehaviour
 
     public Button retryButton;
     public Button backHomeButton;
+    private BitzHealth health;
+    private BitzMagicRewardGateway rewardGateway;
+
+    private void Awake()
+    {
+        health = GetComponent<BitzHealth>();
+        if (health == null) health = gameObject.AddComponent<BitzHealth>();
+        health.Died += HandleDeath;
+        health.Revived += HandleRevive;
+        rewardGateway = BitzMagicRewardGateway.CreateIfConfigured();
+        if (rewardGateway != null)
+        {
+            var provider = gameObject.AddComponent<BitzRewardedReviveProvider>();
+            provider.Configure(rewardGateway);
+            health.SetReviveProvider(provider);
+        }
+    }
+
+    private void HandleDeath()
+    {
+        beatController.PauseBeats();
+        uiController.musicPlayer.Pause();
+    }
+
+    private void HandleRevive()
+    {
+        uiController.musicPlayer.UnPause();
+        beatController.StartBeats();
+    }
 
     public void Start()
     {
@@ -27,16 +56,33 @@ public class GameController : MonoBehaviour
 
         hitAction = InputSystem.actions.FindAction("Hit");
         this.hitAction.performed += Hit;
-        this.hitAction.performed += (InputAction.CallbackContext callback) => this.hitSfx.Play();
+        this.hitAction.performed += PlayHitSound;
         this.gameData.score = 0;
         this.beatController.OnNotifyBeatHit += ProcessHitResult;
         this.beatController.OnNotifyBeatHit += UpdateGameDataCount;
+        this.beatController.OnNotifyBeatHit += HandleHealthHit;
         uiController.OnFinishLoadingAssets += Loader_OnFinishLoadingAssets;
         beatController.SpawnBeats();
         this.scoreText.text = UIUtils.GetScoreText(this.gameData.score, 9);
         uiController.OnUpdateGameState += HandleGameStateUpdate;
         retryButton.onClick.AddListener(Retry);
         backHomeButton.onClick.AddListener(BackHome);
+    }
+
+    private void HandleHealthHit(HitResult hitResult, float _) => health.RegisterHit(hitResult);
+
+    private void OnDestroy()
+    {
+        if (health != null) { health.Died -= HandleDeath; health.Revived -= HandleRevive; }
+        if (beatController != null)
+        {
+            beatController.OnNotifyBeatHit -= ProcessHitResult;
+            beatController.OnNotifyBeatHit -= UpdateGameDataCount;
+            beatController.OnNotifyBeatHit -= HandleHealthHit;
+        }
+        if (uiController != null) { uiController.OnFinishLoadingAssets -= Loader_OnFinishLoadingAssets; uiController.OnUpdateGameState -= HandleGameStateUpdate; }
+        if (hitAction != null) { hitAction.performed -= Hit; hitAction.performed -= PlayHitSound; }
+        rewardGateway?.Dispose();
     }
 
     private void HandleGameStateUpdate(GameState gameState)
@@ -47,7 +93,11 @@ public class GameController : MonoBehaviour
                 this.beatController.PauseBeats();
                 break;
             case GameState.Ingame:
-                this.beatController.StartBeats();
+                if (!health.IsDead) this.beatController.StartBeats();
+                break;
+            case GameState.Ended:
+                this.beatController.PauseBeats();
+                BitzAds.PreloadInterstitial();
                 break;
         }
     }
@@ -80,8 +130,13 @@ public class GameController : MonoBehaviour
 
     public void Hit(InputAction.CallbackContext callback)
     {
+        if (BitzAds.IsShowing || health.IsDead) return;
         this.beatController.TryHit(callback);
 
+    }
+    private void PlayHitSound(InputAction.CallbackContext callback)
+    {
+        if (!BitzAds.IsShowing && !health.IsDead) this.hitSfx.Play();
     }
     public TMP_Text hitComboText;
     private int comboCount;
@@ -123,12 +178,12 @@ public class GameController : MonoBehaviour
 
     public void Retry()
     {
-        SceneManager.LoadScene("BitzPlayer");
+        BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("BitzPlayer"));
     }
 
     public void BackHome()
     {
-        SceneManager.LoadScene("MainMenu");
+        BitzAds.ShowInterstitialThen(() => SceneManager.LoadScene("MainMenu"));
     }
 
 
